@@ -1,0 +1,67 @@
+
+Scala: 2.13.6
+	Windows: https://www.geeksforgeeks.org/how-to-install-scala-in-windows/
+		https://www.tutorialspoint.com/scala/scala_environment_setup.htm
+		https://www.journaldev.com/7456/download-install-scala-linux-unix-windows
+	Ubuntu: https://medium.com/@josemarcialportilla/installing-scala-and-spark-on-ubuntu-5665ee4b62b1
+	Mac: https://medium.com/@djamaldg/how-to-install-scala-on-macos-5771d55339cb
+		https://www.freecodecamp.org/news/installing-scala-and-apache-spark-on-mac-os-837ae57d283f/
+Scala SBT: 1.5.5
+	Windows: https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Windows.html
+	Ubuntu: https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html
+	Mac: https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Mac.html
+
+Visual Studio Code:
+	https://code.visualstudio.com/download
+	Linux: https://code.visualstudio.com/docs/setup/linux
+	Mac: https://code.visualstudio.com/docs/setup/mac
+	Windows: https://code.visualstudio.com/docs/setup/windows
+	
+	Extensions: Scala (Metals), Scala (sbt), Scala Syntax (official)
+
+Git: https://git-scm.com/downloads
+Github: for code repository.
+
+MongoDB: 4.4.x
+	Do not install it as a service.
+	d/l Community Edition.
+	do not install Compass.
+	
+	Windows: https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/
+	Linux: https://docs.mongodb.com/manual/administration/install-on-linux/
+	Mac:  https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/
+
+	mongoimport: https://docs.mongodb.com/database-tools/installation/installation/ 
+	
+Free Download Manager (Chrome Extension)
+
+Hortonworks HDP Sandbox:
+-------------------------
+www.virtualbox.org/
+www.cloudera.com 
+	https://www.cloudera.com/downloads/hortonworks-sandbox.html
+	Download 2.6.5
+	https://www.cloudera.com/tutorials/learning-the-ropes-of-the-hdp-sandbox.html
+
+Custom VM:
+----------
+Ubuntu: 20.04
+    https://ubuntu.com/download/desktop
+Java: 1.8.0_292
+Hadoop: hadoop-3.2.2
+    https://phoenixnap.com/kb/install-hadoop-ubuntu
+MySql:
+	https://www.mysqltutorial.org/install-mysql-ubuntu/
+Hive: apache-hive-3.1.2-bin
+    https://phoenixnap.com/kb/install-hive-on-ubuntu
+Sqoop:
+    https://www.edureka.co/community/39201/sqoop-installation-on-linux
+Pig:
+    https://www.edureka.co/blog/apache-pig-installation
+Spark: apache-spark-3.1.2 
+    NOTE: Ensure you are currently in the Hadoop user (username hdoop or whatever you have selected as the Hadoop username) environment, connected to localhost and started dfs and yarn.
+    https://sparkbyexamples.com/spark/spark-setup-on-hadoop-yarn/
+    https://sparkbyexamples.com/spark/spark-installation-on-linux-ubuntu/
+Kafka:kafka_2.13-2.7.0
+    https://www.tutorialkart.com/apache-kafka/install-apache-kafka-on-ubuntu/
+

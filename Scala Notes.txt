@@ -1,0 +1,745 @@
+SCAalable LAnguage
+	REPL: Read-Eval-Print-Loop (Interpreter mode)
+	Script-based: program (.scala)
+	SBT: 
+	
+Scala:
+	Functional
+	OO
+	
+Functional Programming:
+	public int add(int a, int b) {
+	   return a +b;
+	   
+	c = add(10,20)
+	println(c)		// 30
+	
+	x = add
+	x(10,20)
+	
+	foo(add)
+	
+Scala runs on JVM, java-based
+Scala can exeucte Java code also.
+
+All types are objects
+Nested functions
+	foo(a,b) {
+	    bar(x,y) {
+		    // code
+		}
+	}
+Functions are objects
+Traits, Concurrency...
+
+Concepts of Functional Programming
+	Pure functions
+	Recursion
+	Higher-Order Functions
+	variables are immutable
+	
+Pure Functions:
+	2 main propertiers:
+		1. they always produce the same output given the same arguments
+		2. no side-effects, i.e.; they do not modify any argument.
+Recursion:
+	foo(a,b) {
+		// processing
+		if (condition) {
+		    foo(x,y);
+		if (condition)
+			return somevalue;
+	
+	
+	fib(n)
+		if( n <= 1)
+		   return 1;
+	   else
+		return fib(n - 1) + fib(n - 2);
+		
+First Class functions and Higher-Order Functions
+	FC functions are treated as variables.
+	Higher-Order function is one that received a function as a parameter
+	
+	foo() {
+		print("hello there")
+	}
+	
+	show_output(f) {
+	   f()
+	}
+	
+	show_output(foo)
+	
+Variables are immutable:
+	in functional programming, variables are initialized, they cannot be modified.
+	
+	
+2-step proces to run a scala program:
+	compile: scalac filename.scala
+	run: scala package.objectname
+
+
+SBT:
+	create a folder: mkdir somename
+	change directory to the new folder: cd somename
+	sbt new sbt/scala-seed.g8
+		enter a project name: firstscala
+	SBT creates a new folder called "firstscala"
+	cd firstscala
+		NOTE: all .scala code files will be in .\src\main\scala\example or .\src\main\scala\whatever_package_you_create
+	sbt
+	sbt:firstscala>compile
+	sbt:firstscala>run
+	sbt:firstscala>package
+	sbt:firstscala>exit
+	
+	
+"Spec" files are for unit testing.
+	Hello.scala
+		HelloSpec.scala
+		
+REPL, Variables and Values.
+	REPL: Read-Eval-Print-Loop
+	Literal value: "Hello World", 42, "A"
+	Literal value is immutable.
+	A variable is mutable. A variable is a storage unit. A value is assigned to a variable.
+		var x: Int = 10
+		val name: String = "Ajay singala"
+
+	Scala has "type inference":
+		var x = 10
+		var name = "Ajay"
+		
+	types: data types
+		String: A sequence of characters
+		Boolean (true or false)
+		Char: A single character, 16 bit 'A', 'B'
+		Byte: 8 bit signed value
+		Int: 32 bit signed value
+		Short: 16 bit signed value
+		Long: 64 bit signed value
+		Float: 32 bit with decimals
+		Double: 64 bit with decimals
+		
+		Advanced types:
+			Unit: like void. There is no value.
+			Null: Null or empty reference.
+			Nothing: subtype of every other type, includes no values.
+			Any: Supertype of eveyr other type.
+		
+	Coding Conventions:
+		Case sensitive
+		Objects
+		Methods
+		Fields
+		Indentifiers:
+			var age = 10
+			var name = "Ajay"
+			age, name are indentifiers
+			object HelloWorld {
+				def main(args: Array[String]) {
+					println("something")
+				}
+			}
+			legal identifiers:
+				age, salary, _number, __2_somedata
+			illegal identifiers:
+				$salary, 213ahc, -salary
+				
+Scala Keywords:
+	var: mutable
+	val: immutable
+	object
+	lazy
+	
+Multiple assignments
+Lazy loading:
+	lazy val is a language feature of Scala that is used to initialize a variable.
+	The actual initialization does not happen immediately.
+	It happens ONLY when you access the variable the first time.
+	After that, it behaves like any other val variable.
+	
+	lazy val lv = 500
+		// assignment of value is not done immediately.
+		// It will be assigned only when the variable is used.
+		
+	println(lv)
+	lv * 5
+	
+	= is for assignment (assign value on the RHS to the var on the LHS)
+		For e.g.; a = 10
+	== comparison
+		similar to: is a equal to b => a == b
+	! negate the condition or value
+	!= not equal to
+	&& AND
+	|| OR
+
+String Interpolation:
+	printf()
+	
+characters variables are represented by single quotes (''), not double quotes ("")
+	
+	AND (&&):	
+		T && T = T
+		T && F = F
+		F && F = F
+	
+	OR (||)
+		T || T = T 
+		T || F = T
+		F || F = F
+	
+	(cond1) && ((cond2) || (cond3))
+	
+	Order of precedence:
+		()
+		&&
+		||
+		
+	Arithmetic operators Order of precedence:
+		()
+		*
+		/
+		+
+		-
+		%
+Expressions, Statements and Conditions
+	Expression Blocks
+	if..else Expression
+	if(condition) {
+		// run this code if condition is true.
+	}
+	else {
+		// run this code if the condition is false.
+	}
+	
+	ternary. ?: (not in scala)
+	val max = if(x > y) x else y
+	val max = (x > y) ? x : y
+	
+	if-else-if Expression
+
+	var status = "New"
+	def checkStatus(status: String) : Unit = {
+		if(status == "New") {
+			println("This is a new ticket...")
+		}
+		else if(status == "InProgress") {
+			println("The ticket is in-progress...")
+		}
+		else if(status == "Closed") {
+			println("The ticket has been closed...")
+		}
+		else if(status == "ReOpened") {
+			println("The ticket has been re-opened...")
+		}
+		else if(status == "Rejected") {
+			println("The ticket has been rejected...")
+		}
+		else {
+			println("Status not recognized...")
+		}
+	}
+	
+	switch(expression) {
+		case (value1): expression
+		case (value2): expression
+		case (value3): expression
+		default: expression
+	}
+	
+	
+	switch(status) {
+		case ("New"): expression; break
+		case ("InProgress"): expression; break
+		case ("Closed"): expression; break
+		case ("Rejected"): expression; break
+		case ("ReOpened"): expression; break
+		default: expression; break
+	}
+	
+Match Expressions:
+		<expr> match {
+			case <pattern match 1> => <experession>
+			case <pattern match 2> => <experession>
+			case <pattern match n> => <experession>
+	
+		}
+		
+	def checkStatusMatch(status: String) : Unit = {
+		status match {
+			case "New" => println("New ticket")
+			case "Closed" => println("Ticket closed")
+			case "Rejected" => println("Ticket rejected")
+			case "InProgress" => println("Ticket is in-progress")
+			case "ReOpened" => println("Ticket re-opened")
+			case other => println("Invalid status provided")
+		}
+	}
+	
+	// Wildcard operator pattern
+	def checkStatusMatch(status: String) : Int = {
+		status match {
+			case "OK" => 200
+			case "Not Found" => 404
+			case _ => { 
+				println(s"Could not parse $status")
+				-1
+			}
+		}
+	}
+	
+	// Pattern Alternative.
+	def dotw(day: String) : String = {
+		day match {
+			case "MON" | "TUE" | "WED" | "THU" | "FRI" => {
+				day match {
+					case "WED" => "Mid Week"
+					case "MON" => "Morning blues"
+					case other => "Weekday"
+				}
+			}
+			
+			case "SAT" | "SUN" => "WEEKEND! WOHOO!"
+		}
+	}
+	
+	// Matching with Pattern Guards.
+	// Pattern guards add an "if" expression to the value-binding pattern.
+	def chkResponse(response: String) : Unit = {
+		response match {
+			case s if s != null => println(s"Received response: $s.")
+			case s => println("Error! Null response received.")
+		}
+	}
+	
+Loops:
+	for loop:
+	
+	for(x <- 1 to 7) { println(s"Day $x") }
+	
+	1. initialize x to 1
+	2. print the value of x
+	3. increment x by 1
+	4. if the value of x is greater than 7, STOP!
+	5. if the value of x is less than or equal to 7, go to step #2.
+	
+	val quotes = "Faith,Hope,Charity"
+	for {
+		t <- quotes.split(",")
+	} {	if( t.size > 0) println(t) }
+
+	// Nested Iterator/Loop.
+	for { x <- 1 to 2				// Outer Loop
+		y <- 1 to 3					// Inner Loop
+	}
+	{ println(s"$x : $y") }
+	
+	First it will iterate through "x" values.
+	For each x value, it will also iterate through all "y" values.
+	
+	x: 1,2
+	y: 1,2,3
+	
+	x:1 y:1
+	x:1 y:2
+	x:1 y:3
+	x:2 y:1
+	x:2 y:2
+	x:2 y:3
+
+	for-until-by:
+		The 2nd number is not inclusive.
+	for(x <- 1 until 8 by 2) { println(x) }
+	
+	while loop:
+	var x = 1
+	while(x > 0) {
+		println(x)
+		x += 2
+	}
+	
+	do-while loop:
+		// Will perform the operation(s) within the loop at least once!
+	val x = 947465
+	do {
+		println(x)
+		x += 1
+	} while(x < 10)
+	
+	Object Oriented Programming:
+		Inheritance
+			Derive: Car derives from Vehicle. BMW derives from Car.
+			
+		Overriding
+		Polymorphism
+		Classes - like templates
+		Objects - runtime instance of a class.
+			User@6edfb42d -> Classname@seq of numbers+alphabets
+							internal reference used by the JVM for that particular instance
+							internally, used to determine the memory address location of the object.
+				
+		Exercise:
+			Create a class for Car
+				Start: "Starting Car".
+			Create class for BMW that inherits from Car
+				override Start: "Starting BMW"
+			Create sub-class (Series3, Series5, Series7) under BMW that inherit from BMW
+				override Start: "Starting Series3/5/7"
+			Create instances of Car, BMW, Series3, Series5, Series7
+			Call the Start() of each of these instances and observe the output.
+			
+				
+		class Car(val make: String, val year: Int = 2021) {
+			def printDetails(): Unit = {
+				println(s"Make of the car is $make manufactured in the year $year")
+			}
+		}
+		
+		class User(val firstname: String, val lastname: String, val city: String) {
+			def printFullname(): Unit = {
+				println(s"The name $lastname, $firstname $lastname")
+			}
+		}
+		
+Tuples:
+	an ordered container of 2 or more values.
+	all of the values in a tuple can be of different types.
+	are immutable
+	val colors = ("Red", "Blue", "Green")
+	val user = ("Ajay", "Singala", 26)
+	val colors = new Tuple("Violet", "Indigo", "Blue")
+	
+JIRA:
+	Epic
+		Story
+			Task
+				Sub-taks (optional)
+		Bug
+		
+Comments in Scala:
+	Single line: //
+	Multi line: /* */
+	Documentation: /** */
+	
+Functions:
+	Functions are named, reusable expressions.
+	Can be parameterized.
+	Can return values.
+	
+	Pure / Impure (Unpure) Functions:
+		Pure Function is one that:
+			1. Has one or more parameters.
+			2. Performs some calculations using only the input parameters.
+			3. Returns a value.
+			4. Always returns the same result for the same input.
+			5. Does not affect any data outside of the function.
+			6. Is not affected by any data outside the function.
+		Impure function:
+			Any function not meeting any of the above criteria is an Impure function.
+		
+		Expression Block:
+			any code within curly braces: { }
+		Calling function with Expression Blocks (a.k.a. Call-By-Name parameters)
+			def formatNum(amount: Double) = f"USD $amount%.3f"
+			formatNum { val rate = 1.32; 0.235 + 0.7123 + rate * 5.32 }
+		Function with Variable Arguments:
+			
+			for(aMessage <- messages) {
+				println(aMessage)
+			}
+			
+			Iterate through the "messages" variable.
+			Extract 1 message (value) from "messages" at a time.
+			Store the extracted value into the variable "aMessage".
+			Print the value in aMessage
+			Fetch the next value in messages and continue till all values in messages are read.
+			
+			Similar to (in other languages):
+				for(var aMessage in messages) {
+					do this....
+				}
+		Calling functions with Default Values:
+			def foo(fname: String, lname: String, city: String = "NYC") : Unit = {
+				println(s"......")
+			}
+			
+			foo("ajay", "Singala", "Reston")
+			foo("ajay", "Singala")
+			
+		Calling functions with Named Parameters:
+			def foo(fname: String, lname: String, city: String = "NYC") : Unit = {
+				println(s"......")
+			}
+			
+			foo("ajay", "Singala", "Reston")
+			foo(fname="ajay", lname="Singala")
+			foo(fname="ajay", lname="Singala", city="Reston")
+			foo(lname="ajay",fname="Singala", city="Reston")
+			foo(city="Reston", fname="ajay", lname="Singala")
+		First Class and Higher-Order Functions.
+				
+		Constructor (ctor):
+			the name of the ctor, which is actually a function, is the same as the name of the class.
+			class Car {
+				def Start() : Unit = {
+					// Some code.
+				}
+			}
+			
+			val bmw = new Car()
+
+			class AnotherCar(make: String, year: Int) {		// overriden the default ctor.
+				def Start() : Unit = {
+					// Some code.
+				}
+				
+				def add(i: int, j: int) {
+					println(i+j)
+				}
+
+				def add(i: double, j: double) {
+					println(i+j)
+				}
+			}
+			val somecar = new AnotherCar("honda", 2021)
+			somecar.add(10,20)
+			somecar.add(20.5f, 45.23f)
+			
+			
+			class User {
+				var firstname: String = ""
+				var lastname: String = ""
+				var user_age: Int = 0
+				
+				this(fname: String, lname: String) {
+					user_age = 100
+					firstname = fname
+					lastname = lname
+				}
+				
+				this(fname:String, lname: String, age: Int) {
+					user_age = age
+					firstname = fname
+					lastname = lname
+				}
+			}
+			
+			var u1 = new User("ajay", "singala")
+			var u2 = new User("ajay", "singala", 99)
+			println(u1.user_age)
+			
+			
+			C#:
+			public class Car {
+				Car() {
+					// some code.
+				}
+				
+				Car(string make, int year) {		// overloading!!!
+					// some code.
+				}
+			}
+			
+			var car1 = new Car()
+			var car2 = new Car("Toyota", 2021)
+			
+Traits:
+	they are like classes, but have partial implementation
+	Like Abstract Classes.
+	Like a collection of abstract and non-abstract methods.
+	
+	Similar to Interface in Java and C#.
+	You cannot instantiate a trait (just like abstract class)
+
+	
+	abstract class ClassA {
+		def print: String
+	}
+	var obj1 = new ClassA	// ERROR! Cannot instantiate an abstract class.
+	
+	class ClassB extends ClassA {
+		def print = "This is a method to print"
+	}
+	var obj2 = new ClassB()
+	println(obj2.print)
+	
+	
+Collections:
+	Tuples
+	Scala.collection.mutable
+	Scala.collection.immmutable
+	
+	Seq:
+		an immutable and unordered collection
+		It is a trait that represents indexed sequences.
+		Access elements by their indexes.
+		Maintains insertion order of elements.
+	
+	List:
+		Immutable linked list.
+		To store ordered elements.
+		Calculate total of all numbers in a list:
+			var total = 0; for( i <- numbers) { total += i }
+			var total2 = numbers.reduce((a: Int, b: Int) => a + b)
+		numbers.sorted
+			
+	Maps:
+		immutable key-value pairs (like a dictionary)
+		a.k.a Hashmaps
+
+	Set:
+		an immutable and unordered collection
+		of unique elements. Works similar to a List.
+		elements not accessible by index.
+		Set are mutable only if declared using "var".
+		
+	Transformation using map():
+		val languages = List("scala", "c#", "java")
+		languages.map(lang => lang.toUpperCase)
+		languages.map(_.toUpperCase)
+			converts to something like this:
+				languages.map(res24 => res24.toUpperCase)
+		
+		var total2 = numbers.map(a => a * a)
+		var total2 = numbers.map(_*2)
+			gets converted into something like this: var total2 = numbers.map(a => a * 2)
+			
+		using flatMap():
+			very similar to map(), but it completely flattens the collection.
+			
+	filter()
+		used to exclude or "filter out" certain elements in a collection.
+		
+	slicing:
+		List(2,3,5,7) slice(n,m)
+			Start from the element at index position n (starting with 0)
+			Extract all elements till, but not including the element at position m (which means the element at m-1)
+		List(2,3,5,7) slice(1,3)
+
+	List(Person("ajay", "singala"),Person("ajay", "singala")...) sortBy (_.firstname.size) 
+	
+Underscore (_)
+	Used very frequently by Scala devs.
+	Called "syntactic sugar"
+		Mainly because it makes the code much cleaner, simpler and shorter.
+	Module import:
+		import scala.collection.immutable._			// Wildcard "*"
+	
+	
+	src/main/scala/example
+	src/test/scala/example:
+		unit testing code
+		test suites here
+		you do assertions here.
+
+    val items = Seq(
+      ("candy", 2, true),
+      ("cola", 7, false),
+      ("apple", 3, false),
+      ("milk", 4, true)
+    )
+    val itemsToBuy = items
+      .filter(_._3) // filter in only available items (true)
+      .filter(_._2 > 3) // filter in only items with price greater than 3
+      .map(_._1) // return only the first element of the tuple; the item name
+    assert(itemsToBuy == Seq("milk"))
+	
+	.filter(_     	=> the entire element ("candy", 2, true)
+	.filter(_._     => each sub-element indidvidually.
+	.filter(_._1)	= refer to the 1st element in the collection.
+	.filter(_._2)	= refer to the 2nd element in the collection.
+		.filter(_._2 > 3)	= check if the 2nd element is > 3
+	.filter(_._3)	= refer to the 3rd element in the collection.
+		.filter(_._3)			= check if the 3rd element has the boolean value "true".
+		.filter(_._3 == true)	= check if the 3rd element has the boolean value "true".
+
+	val nums = Seq(1,2,3,4,5)
+	nums.filter(_ > 4)
+
+
+    def sum2(x: Int, y: Int): Int = x + y
+    val sumToTen = sum2(10, _: Int)   // Partially Applied Function.
+    val sumFiveAndTen = sumToTen(5)
+		
+		sum2(10,5)
+	
+	class, that member variables, each of these variables have a getter and setter function.
+	class Product{
+		var price: Int
+	}
+	val prod1 = new Product
+	prod1.price = 20			// call the setter of that var.
+	println(prod1.price)		// call the getter of that var.
+	
+	
+	 Higher-Kinded Type:
+		is a Type that abstracts over some type. which in turn, absracts over another type.
+			
+Exception Handling
+	What is an Exception?
+		an unwanted or unexpected event (turns to be an error).
+		it is an runtime error, during the execution of a program.
+	what is the diff b/w an Exception and an Error.
+		ERRORS: VALIDATION!!!!
+			Firstname
+			Lastname
+			email: abcd123.com
+		Exceptions: are unexpected.
+			Your program is trying to connect to a DB.
+			if cannot connect to DB, it throws an exception.
+	It is very important to HANDLE EXCEPTIONS so that your program does not end abruptly.
+	try-catch block
+	
+	it "throws" an exception.
+	try {
+		// execute some code
+		connect to a DB.
+	} catch {
+		// catch the exception and handle it!
+		could not connect. try again.
+	}
+	
+	Exceptions are THROWABLE!
+	
+	try-catch-finally block
+	
+	try {
+		var dbConn = code to connect to a database
+		fetch data from a particular table
+		process the data one row at a time
+		insert data into the DB => an exception occurs.
+	}
+	catch {
+		// Handle exception.
+	}
+	finally {
+		dbConn.close
+	}
+	:
+	:
+	:
+	:
+	
+Handling Failures
+	custom exceptions.
+	Every exception derives from the Exception class of Scala.
+
+	Try/Success/Failure:
+		A cleaner way to handle exceptions.
+		try something.
+		If it works, return Success.
+		If it does not work, return Failure.
+		
+	Exception-less Error Handling:
+		Option/Some/None 	=> Success:Sonme, Failure:None
+		Either/Left/Right	=> Success:Right, Failure:Left
+	
+Futures:
+	Asynchoronous (Async) proramming in Scala
+	Future in Scala represnts a result of an Aysnc computation / operation that my or may not be avaiable YET!!!
+	
+	synchronous
+
