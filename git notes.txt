@@ -28,5 +28,9 @@ we will now have the default branch as "main"
 
 master
 
-
+ONLY ONCE: the first time.
 git clone https://github.com/AjaySingala/Oct2021ScalaBatch.git
+
+After that:
+git pull
+
