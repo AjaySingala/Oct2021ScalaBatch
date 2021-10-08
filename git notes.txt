@@ -1,0 +1,32 @@
+create a dir
+navigate to that dir
+git init		// Only once.
+created a file here.
+git status
+git add .
+git commit -m "message"
+git branch -M main
+// Link your local repository to the remote repo on Github
+git remote add origin https://github.com/AjaySingala/OctBatchDemo.git		// Only once!
+git push - u origin main
+
+
+git remote -v 	// verify remote repo.
+
+git clone <url>
+
+git add .
+git commit -m "message"
+git push
+
+
+branch master
+git branch -M main
+
+before April, all repos had by default a branch called "master"
+we will now have the default branch as "main"
+
+master
+
+
+git clone https://github.com/AjaySingala/Oct2021ScalaBatch.git
