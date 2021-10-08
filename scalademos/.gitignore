@@ -1,0 +1,10 @@
+*.class
+*.log
+.bloop/
+.bsp/
+.metals/
+.vscode/
+com/
+target/scala-2.12/scala_project_2.12-0.1.0-SNAPSHOT.jar
+target/
+
