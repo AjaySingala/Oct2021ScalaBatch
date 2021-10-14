@@ -1,0 +1,828 @@
+Database
+RDBMS
+SQL
+
+Database:
+	Data that is useful, related, accessible, changeable, manageable.
+	
+DBMS: DataBase Management System
+	Related two sets of data properly.
+RDBMS: 	Relational DataBase Management System
+	Table
+		Rows: Each row representing one record
+		Columns: Each olumn representing a property or attribute of the entity
+		
+		Customers table:
+			Columns: Id Firstname 	Lastname DOB Phone Email Address State 	City 		Zipcode
+			Rows:	 101	John      Smith								  	Reston
+					 102	Jane      Smith								  	NYC
+					 103	Mary      Jane								   	Dallas
+					 104	Neo       Trinity								Boston
+					 105	John      Smith								  	Seattle
+		Products
+			id
+		ProductCategories
+			id
+		Orders
+			id
+		
+		Ask the DBMS to give me the row for "John Smith"
+		
+	Composite Keys:
+		A Primary Key comprised of 2 or more columns.
+		School where we keep student data:
+			RollNumber	Firstname	Lastname	Phonenumber
+					rollnumber + Phonenumber to be a composite Key
+			1			John		Smith		555-5678
+			1			John		Smith		555-5678
+			
+SQL Statements used for querying the database
+	1 database that can have many tables.
+	Each table will be made up of multiple columns and many rows.
+	Tables may be related to each other based of a PK-FK relationship.
+	To have PK-FK relationship between tables, it is necessary to have PKs defined on tables.
+	PK contraints / rules:
+		they have to unique per row
+			no duplicate values.
+			no 2 rows can have the same PK values.
+			PK column values can NEVER be NULL.
+	FK contraints / rules:
+		To define a FK on a table, the specific column must be a PK in the related table.
+	
+	SQL: Structured Query Language
+	
+	DDL: Data Definition Language
+		CREATE TABLE 
+		ALTER TABLE
+		DROP TABLE
+		TRUNCATE TABLE
+	DML: Data Manipulation Language
+		SELECT
+		INSERT: used to insert new rows/data in a table.
+		UPDATE: used to update existing rows/data in a table.
+		DELETE: used to delete existing rows/data from a table.
+
+MongoDB is NOT a RDBMS: It is a NoSQL database.
+
+SELECT:
+	SELECT * FROM <table>
+		Show all rows and all columns from the table named <table>
+	
+	SELECT * FROM Customers
+	
+	// Only those rows where city = 'London' and all columns.
+	SELECT * FROM Customers
+	WHERE City = 'London'
+
+	SELECT * FROM Customers
+	WHERE Country = 'France'
+	AND City = 'Paris'
+	
+	SELECT * FROM Customers
+	WHERE Country = 'France'
+	OR Country = 'Sweden'
+
+	SELECT * FROM Customers
+	ORDER BY customerName
+	
+	SELECT * FROM Customers
+	ORDER BY city, customerName DESC
+
+	SELECT * FROM Customers
+	WHERE Country = 'France'
+	ORDER BY city ASC, CustomerName DESC
+
+Join tables:
+	PK-FK relationship
+	SELECT OrderId, OrderDate, Orders.CustomerId, CustomerName, City
+	FROM Orders
+	INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+	WHERE City = 'London'
+
+	Using alias:
+	SELECT o.OrderId, o.OrderDate, o.CustomerId, c.CustomerName, c.City
+	FROM Orders o
+	INNER JOIN Customers c ON o.CustomerID = c.CustomerID
+	WHERE c.City = 'London'
+
+	SELECT o.OrderId, o.OrderDate, o.CustomerId, c.CustomerName, c.City
+	FROM Orders o
+	INNER JOIN Customers c ON o.CustomerID = c.CustomerID
+	WHERE c.City = 'London'
+	ORDER BY c.CustomerId
+
+	CustomerID CustomerName OrderId OrderDate ProductId ProductName Qty Price TotalAmount
+		Tables to be joined:
+			customers
+			orders
+			orderdetails
+			products
+	
+SELECT o.OrderId, o.OrderDate, c.CustomerId, c.CustomerName, od.ProductId, p.ProductName, od.Quantity, p.Price, (od.Quantity * p.Price)  AS 'TotalQuantity'
+FROM Orders o
+INNER JOIN customers c ON o.CustomerId = c.CustomerId
+INNER JOIN OrderDetails od ON o.OrderId = od.OrderId
+INNER JOIN Products p ON od.ProductID = p.ProductId
+ORDER BY c.CustomerId
+
+
+CREATE TABLE:
+create table users
+	(Id int not null,
+	firstname varchar(25),
+	lastname varchar(25),
+	Primary key (id)
+	)
+
+INSERT:
+INSERT INTO <Table>
+(col1, col2,...coln)
+VALUES(val1, val2,...valn)
+
+INSERT INTO Users
+(Id, Firstname, Lastname)
+VALUES(1, 'John', 'Smith')
+INSERT INTO Users
+(Id, Firstname, Lastname)
+VALUES(2, 'Joe', 'Smith')
+
+
+UPDATE:
+UPDATE <tablename>
+SET colname = <value> [,colname = <value>]
+[WHERE <condition>]
+
+
+DELETE:
+DELETE FROM <table> 
+[WHERE <condition>]
+
+DELETE FROM Users
+WHERE Age IS NULL
+
+DELETE FROM Users
+WHERE Age IS NOT NULL
+
+
+ALTER TABLE:
+ALTER TABLE Users
+ADD Age Int
+
+ALTER TABLE Users
+ADD Email Varchar(25),
+ADD Phone varchar(15)
+
+ALTER TABLE Users
+DROP column <colname>
+
+SQL Server:
+ALTER TABLE table_name
+ALTER COLUMN column_name datatype;
+
+Oracle (< 10G) / MySQL:
+ALTER TABLE table_name
+MODIFY COLUMN column_name datatype;
+
+Oracle 10G+:
+ALTER TABLE table_name
+MODIFY column_name datatype;
+
+DROP TABLE: to delete a table and it's data.
+DROP TABLE Users
+
+TRUNCATE TABLE: deletes the data inside a table, but not the table itself.
+TRUNCATE TABLE Users
+
+JOINS:
+	INNER JOIN: Returns records that have matching values in both tables
+	LEFT (OUTER) JOIN: Returns all records from the left table, and the matched records from the right table.
+		The result is 0 records from the right side, if there is no match.
+		The LEFT JOIN keyword returns all records from the left table (Customers), even if there are no matches in the right table (Orders).
+		Wherever there is no match on the right, it will show NULL.
+	RIGHT (OUTER) JOIN: Returns all records from the right table, and the matched records from the left table.
+		The result is 0 records from the left side, if there is no match.
+		The RIGHT JOIN keyword returns all records from the right table (Employees), even if there are no matches in the left table (Orders).
+		Wherever there is no match on the left, it will show NULL.		
+	FULL (OUTER) JOIN: Returns all records when there is a match in either left or right table (can potentially return very large result-sets!).
+		The FULL OUTER JOIN keyword returns all matching records from both tables whether the other table matches or not. So, if there are rows in "Customers" that do not have matches in "Orders", or if there are rows in "Orders" that do not have matches in "Customers", those rows will be listed as well.
+	Show me all records for all customers and all products, indicating which customer has purchased which product.
+	
+ER Diagrams: Entity Relationship Diagrams
+Multiplicity:
+	1 Customer -> Many Orders	1..*  	=> One to Many
+	1 Order -> 1 Customer				=> One to One
+	Order -> Product
+	Employee -> Department 1..1
+	Department -> Employee 1..*			
+	Customer -> Product  *..*			=> Many to Many (you have to use an additional table)
+										
+										
+MongoDB:
+========
+Start the server: (In terminal window #1)
+	"C:\Program Files\MongoDB\Server\4.4\bin\mongod" --dbpath="c:\data\db"
+Start the Mongodb shell (In terminal windows #2):
+	"C:\Program Files\MongoDB\Server\4.4\bin\mongo"
+
+TABLES => Collections
+
+show dbs					Show all databases
+use <dbname>				use a database
+db.getCollectionNames()		show all collections in the currect db.
+
+Data is stored in the collections in JSON (JavaScript Object Notation) format.
+We cannot use SQL statemens like SELECT, INSERT, UPDATE, DELETE.
+CREATE Table
+
+db.customers.find() => SELECT * from Customers
+
+INSERT:
+db.customers.insert( {'id': 1, 'Firstname': 'John'. 'Lastname': 'Smith' } )
+
+MongoDB: By default, it adds a property called _id to every record.
+
+It is not known as a "record". It is called a "document".
+There are no columns. Instead, there are properties/attributes.
+
+We do not insert records/rows in a table.
+Instead, we insert documents in a collection.
+
+MongoDB is a NoSQL DB. It is not a RDBMS!!!
+
+Insert multiple documents by passing them i nan Array of JSON docs:
+db.customers.insert( [
+	{'id': 3, 'Firstname': 'John', 'Lastname': 'Smith' },
+	{'id': 4, 'Firstname': 'Ajay', 'Lastname': 'Singala' },
+	{'id': 5, 'Firstname': 'Neo', 'Lastname': 'Trinity' },
+	{'id': 6, 'Firstname': 'Tony', 'Lastname': 'Stark' }
+	]
+)
+
+db.createCollection("products")
+
+GROUPING and AGGREGATION
+	SUM
+	AVG
+	MAX
+	MIN
+	COUNT
+	
+Orders	
+{'orderid': 301, 'orderdate': '2021-10-01', {'customerid': 1, 'firstname:' 'John', 'lastname': 'Smith' } }
+
+SQL vs NoSQL:
+	SQL = Structured Query Language
+	SQL-based DBMS': SQL server, Oracle, MySql
+	
+	NoSQL: Not Only SQL.
+		non-relational DBs
+			no PK-FK
+		no fixed schema
+		no joins
+
+customers:
+{'customerid': 1, 'firstname': 'John', 'lastname': 'Smith', 'dob': '1999-01-01', 'city': 'Boston', 'state': 'MA', 'phone': '555-5555' }
+orders:	
+{'orderid': 301, 'orderdate': '2021-10-01', 'customer': {'customerid': 1, 'firstname': 'John', 'lastname': 'Smith' } }
+{'orderid': 301, 'orderdate': '2021-10-01', 'customer': {'customerid': 1, 'firstname': 'John', 'lastname': 'Smith' ,'city': 'Boston' } }
+	
+What kind of DBMS is MongoDb?
+	document based NoSQL (not only SQL)
+	
+In what format does mongodb store data?
+	JSON -> type of data (kV pair)
+	collections == tables
+	documents == records / rows
+	properties / attributes == columns / fields
+
+
+Vertical Scaling, Horizontal Scaling:
+
+
+Key features of mongodb?
+	high performance
+	automatic scaling
+	high availability (HA)	
+	(rich query language)
+	
+Using queries in MongoDB to query data and CRUD ops:
+	CRUD:
+	insert
+		to insert 1 document
+		to insert multiple documents
+		
+		db.collection.insert()
+		db.collection.insertOne():
+db.customers.insertOne({'id': 3, 'Firstname': 'John', 'Lastname': 'Smith' })
+		db.collection.insertMany():
+db.customers.insertMany( [
+	{'id': 3, 'Firstname': 'John', 'Lastname': 'Smith' },
+	{'id': 4, 'Firstname': 'Ajay', 'Lastname': 'Singala' },
+	{'id': 5, 'Firstname': 'Neo', 'Lastname': 'Trinity' },
+	{'id': 6, 'Firstname': 'Tony', 'Lastname': 'Stark' }
+	]
+)
+
+db.customers.insertOne({'_id': 3, 'Firstname': 'John', 'Lastname': 'Smith' })
+
+db.collection.find().pretty()
+
+{
+        "_id" : ObjectId("60eaba305e66d126ddb98e36"),
+        "item" : "postcard",
+        "qty" : 45,
+        "size" : {
+                "h" : 10,
+                "w" : 15.25,
+                "uom" : "cm"
+        },
+        "status" : "A"
+}
+
+$gt		>
+$gte	>=
+$lt		<
+$lte	<=
+$ne		<>
+$eq		=
+
+db.inventory.find({'size.h': {$gt : 14}})
+db.inventory.find({'size.h': {$gte : 14}})
+db.inventory.find({'size.h': {$ne : 14}})
+db.inventory.find({'size.h': {$eq : 14}})
+
+AND:
+db.inventory.find({'size.h': {$gte : 14}, 'size.uom': 'cm'})
+db.inventory.find({$and: [{'size.h': {$gte : 14}}, {'size.uom': 'cm'}] })
+
+OR:
+db.inventory.find({$or: [{'size.h': {$gte : 14}}, {'size.uom': 'cm'}] })
+
+Search based on the _id attribute:
+> db.inventory.find({'_id' : "60eaba305e66d126ddb98e34"})				// No result.
+> db.inventory.find({'_id' : ObjectId("60eaba305e66d126ddb98e34")})		// Works.
+
+Sharding:
+	it is a method of distributing data across multiple servers.
+	You may have large sets:
+		for e.g.; you have 2 million documents in a collection
+		run a query: it will have to scan through all 2 mil docs.
+		Solution: create "shards"
+			based a criteria, data is split into shards. This is the "shard key".
+			Each shard is on a different server (horizontal scaling)
+			For e.g.; qty 1-50. qty > 50 
+				2 shards: 1-5 750k. >50 1.25mil 
+			when you run a query with a condition like {'qty' = 10}
+				it will only scan thru that particular "shard"
+			when you run a query with a condition like {'qty' > 75}
+
+Partitions
+Buckets
+
+Projection:
+db.inventory.find({$and: [{'size.h': {$gte : 14}}, {'size.uom': 'cm'}] }, {'item': 1} )		Display only the item attr.
+db.inventory.find({$and: [{'size.h': {$gte : 14}}, {'size.uom': 'cm'}] }, {'_id': 0} )		All attrs except _id.
+db.inventory.find({$and: [{'size.h': {$gte : 14}}, {'size.uom': 'cm'}] }, {'item': 1, 'qty': 1} )	Only item and qty attrs. 
+db.inventory.find({$and: [{'size.h': {$gte : 14}}, {'size.uom': 'cm'}] }, {'size.h': 1} )		only the size.h attr.
+db.inventory.find({$and: [{'size.h': {$gte : 14}}, {'size.uom': 'cm'}] }, {'size.uom': 0} )		all except size.uom.
+
+UPDATE:
+{ "item" : "notepad", "qty" : 55, "size" : { "h" : 10, "w" : 16, "uom" : "cm" }, "status" : "A" }
+
+db.inventory.update( {'item' : 'notepad'}, { $set: {'status' : 'B'} } )
+
+db.inventory.update()		by default, will update only 1 doc.
+db.inventory.updateOne()
+db.inventory.updateMany()
+
+Use .update() to update many docs:
+db.inventory.update( {'item' : 'notepad'}, { $set: {'status' : 'B'} }, {multi: true} )
+
+Update multiple attributes:
+db.inventory.update( {'item' : 'notepad'}, { $set: {'status' : 'B', 'qty': 36} } )
+db.inventory.update( {'item' : 'notepad'}, { $set: {'status' : 'B', 'size.uom': 'in'} } )
+
+db.inventory.replaceOne( {'item' : 'notepad' }, { 'item': 'paper', 'stock': 90, 'h': 14, 'status': 'C'} )	== not recommended to change the entire schema, but will work!
+
+Preferred:
+db.inventory.replaceOne( {'item' : 'notepad' }, { "item" : "paper", "qty" : 90, "size" : { "h" : 14, "w" : 11, "uom" : "cm" }, "status" : "C" } )
+
+Add a new attr:
+db.inventory.replaceOne( {'item' : 'notepad' }, { "item" : "paper", "qty" : 90, "size" : { "h" : 14, "w" : 11, "uom" : "cm" }, "status" : "C" } )
+
+db.inventory.replaceOne( {'item' : 'someweirdvalue' }, { "item" : "notepad", 'sku': '123ABC'} )
+
+If it is found, update (replace) it, if not found, insert it.
+ a.k.a. UPSERT
+db.inventory.replaceOne( {'item' : 'someweirdvalue' }, { "item" : "notepad", 'sku': '123ABC'}, {upsert: true} )
+
+DELETE:
+deleteOne()
+deleteMany()
+
+db.inventory.deleteOne( {'status' : 'C', 'key': 'val'} ) 
+db.inventory.deleteMany( {'status' : 'C'} ) 
+db.inventory.deleteMany({})
+
+Upsert with updateOne():
+db.inventory.updateOne( {'item' : 'somepaper'}, { $set: { "item" : "somepaper", "qty" : 100, "size" : { "h" : 16, "w" : 10, "uom" : "cm" }, "status" : "A" } }, {upsert: true} )
+
+What is aggregation?
+	operations that process data and return computed results.
+	GROUPING
+	SORTING
+
+
+SELECT ProductId, SUM(Quantity)
+FROM OrderDetails
+GROUP BY ProductId
+
+SELECT OrderId, SUM(Quantity)
+FROM OrderDetails
+GROUP BY OrderId
+
+SELECT OrderId, ProductId, SUM(Quantity)
+FROM OrderDetails
+GROUP BY OrderId, ProductId
+
+SELECT ProductId, SUM(Quantity)
+FROM OrderDetails
+WHERE Quantity > 15
+GROUP BY ProductId
+ORDER BY ProductId
+
+WHERE: it is applied before the aggregation.
+To apply filters (conditions) with GROUP BY, use HAVING. WHERE will not work!
+
+SELECT ProductId, SUM(Quantity)
+FROM OrderDetails
+GROUP BY ProductId
+HAVING SUM(Quantity) > 300
+ORDER BY ProductId
+
+With an alias:
+SELECT ProductId, SUM(Quantity) AS 'TotalQuantity'
+FROM OrderDetails
+GROUP BY ProductId
+HAVING TotalQuantity > 250
+ORDER BY ProductId
+
+
+SUM
+MAX
+MIN
+AVG
+COUNT
+
+DISTINCT:
+SELECT  DISTINCT OrderId, ProductId
+FROM OrderDetails
+ORDER BY OrderId
+
+Aggregation / Grouping / Sorting in MongoDB:
+
+
+Sorting:
+db.zipcodes.find().sort({"city": 1})
+db.zipcodes.aggregate( {"$sort" : {"city": -1} } )
+db.zipcodes.aggregate( {"$sort" : {"state": 1, "city": -1} } )
+
+Aggregation:
+
+db.zipcodes.aggregate( [
+	{ $group: { _id: "state", totalPop: { $sum: "$pop" } } }
+] )
+
+db.zipcodes.aggregate( [
+	{ $group: { _id: { state: "$state", city: "$city" }, totalPop: { $sum: "$pop" } } }
+] )
+
+// Apply a filter condition on the GROUPING - Like HAVING on GROUP BY.
+db.zipcodes.aggregate( [
+	{ $group: { _id: "$state", totalPop: { $sum: "$pop" } } },
+	{ $match: { totalPop: { $gte: 10*1000*1000 } } }
+] )
+
+This is similar to this in SQL (RDBMS):
+SELECT state, SUM(pop) AS totalPop
+FROM zipcodes
+GROUP BY state
+HAVING totalPop >= (10*1000*1000)
+
+db.zipcodes.aggregate( [
+	{ $group: { _id: "$state", totalPop: { $sum: "$pop" } } },
+	{ $match: { totalPop: { $gte: 10*1000*1000 } } },
+	{ $sort: { totalPop: 1 } }
+] )
+
+mongoimport:
+cd C:\Users\username\data\MongoDB
+
+"C:\Program Files\MongoDB\Server\mongodb-database-tools\bin\mongoimport" --db geography --collection zipcodes --type json --file .\zipcodes.json
+
+
+"C:\Program Files\MongoDB\Server\mongodb-database-tools\bin\mongoimport" --db geography --collection zipcodes --type json --file C:\downloads\zipcodes.json
+
+Return Average City Population by State:
+db.zipcodes.aggregate( [
+   {$group: {_id: {state: "$state", city: "$city"}, totPop: {$sum: "$pop"}}},
+   { $group: { _id: "$_id.state", avgCityPop: { $avg: "$totPop" } } }
+] )
+
+Return Largest and Smallest Cities by State:
+db.zipcodes.aggregate( [
+    { $group:
+       {
+         _id: { state: "$state", city: "$city" },
+         pop: { $sum: "$pop" }
+       }
+    },
+    // 1 = ASC. -1 = DESC.
+    { $sort: { pop: 1 } },
+    { $group:
+       {
+         _id : "$_id.state",
+         biggestCity:  { $last: "$_id.city" },
+         biggestPop:   { $last: "$pop" },
+         smallestCity: { $first: "$_id.city" },
+         smallestPop:  { $first: "$pop" }
+       }
+    },
+   // the following $project is optional, and
+   // modifies the output format. a.k.a. "projection".
+   { $project:
+     { _id: 0,
+       state: "$_id",
+       cityWithHighestPop:  { name: "$biggestCity",  pop: "$biggestPop" },
+       cityWithLowestPop: { name: "$smallestCity", pop: "$smallestPop" }
+     }
+   }
+ ] )
+
+Aggregation using Pipeline:
+var pipeline = [
+    { $group:
+       {
+         _id: { state: "$state", city: "$city" },
+         pop: { $sum: "$pop" }
+       }
+    },
+    // 1 = ASC. -1 = DESC.
+    { $sort: { pop: 1 } },
+    { $group:
+       {
+         _id : "$_id.state",
+         biggestCity:  { $last: "$_id.city" },
+         biggestPop:   { $last: "$pop" },
+         smallestCity: { $first: "$_id.city" },
+         smallestPop:  { $first: "$pop" }
+       }
+    },
+   // the following $project is optional, and
+   // modifies the output format.
+   { $project:
+     { _id: 0,
+       state: "$_id",
+       cityWithHighestPop:  { name: "$biggestCity",  pop: "$biggestPop" },
+       cityWithLowestPop: { name: "$smallestCity", pop: "$smallestPop" }
+     }
+   }
+ ]
+db.zipcodes.aggregate(pipeline)
+
+FYI...
+db.zipcodes.explain("executionStats").aggregate(pipeline);
+
+$unwind:
+Deconstructs an array field (attibute) and splits it into individual documents.
+
+db.inventory.insertOne( {"_id": "1", "item": "ABCD", "sizes": ["S", "M", "L", "XL"] } )
+db.inventory.insertOne( {"_id": "2", "item": "XYZ", "sizes": [] } )
+db.inventory.insertOne( {"_id": "3", "item": "LMOP", "sizes": ["L", "XL"] } )
+db.inventory.insertOne( {"_id": "4", "item": "QRST", "sizes": ["S"] } )
+db.inventory.insertOne( {"_id": "5", "item": "EFGH", "sizes": "XS" } )
+
+db.inventory.aggregate( [ { $unwind: "$sizes" } ] )
+ 
+db.inventory.insertOne( {"_id": "101", "state": "MA", "cities": ["Boston", "Woburn", "Waltham", "Worcester"] } )
+db.inventory.aggregate( [ { $unwind: "$cities" } ] )
+
+Indexing:
+What is the purpose of an Index?
+	provide high-performance retrieval of data (read ops) for frequently used queries.
+	MongoDB allows to create indexes on any fields / attribute, even fields in subdocuments (nested fields).
+
+	For e.g.; in our zipcodes collection, if majority of our queries (find()) ar edone on the "state" field, we should create an index on "state".
+	
+	By default, every collection has an index, which is on the field "_id".
+	
+	Create an index on a single field: Single Field Index:
+	db.zipcodes.createIndex({"state": 1})
+	db.inventory.createIndex({"size.uom": 1})
+	
+	Create an index with a name:
+	db.zipcodes.createIndex({"state": 1}, {name: "query for state"})
+
+	Create an index on multiple fields: Compound Index:
+	db.zipcodes.createIndex({"state": 1, "city": -1})
+
+	You can create multiple indexes on a collection.
+	
+	Drop an index:
+	db.zipcodes.dropIndex("query for state")
+	
+	db.zipcodes.getIndexes()
+	
+	Get all Indexes in a database:
+		Get all collection names
+		Loop thru one collection at a time (forEach)
+		pass the collection name to the function
+		get the indexes of the collection and print
+		continue with next collection till all collections are processed.
+	db.getCollectionNames().forEach( function(collection) {
+		indexes = db[collection].getIndexes();
+		print("Indexes for " + collection + " are: ");
+		printjson(indexes);
+	})
+	
+	users collection that has user info: firstname, lastname, address, city, state, zipcode, email.
+	db.users.createIndex({"email": 1}, {unique: true})
+
+	You can write complex code in RDBMS (SQL) also:
+		using.....Stored Procedures
+
+StateA	750k
+StateB	500k
+StateC	750k
+
+{"state": "StateA"}	instead of scanning 2Mil docs, it is only going to scan 750k
+db.col.createIndex({"state": 1})
+		
+Schemas and Relations (concept):
+	How do you arrange and organize your documents in collections?
+
+// patron document.
+{ "_id": "Joe", "name": "Joe Broker" }
+
+// address document.
+{
+	"patronId": "Joe",				// reference to the partron document.
+	"street": "123 Fake Street",
+	"city": "FakeCity",
+	"state": "FakeState"
+	"zip": "12345
+}
+
+Normalizing and denormalizing data.
+
+Solution: Embedded Document Pattern (embedded model).
+The address doc is embedded within the patron doc.
+{ 
+	"_id": "Joe", 
+	"name": "Joe Broker",
+	"address": {
+		"street": "123 Fake Street",
+		"city": "FakeCity",
+		"state": "FakeState"
+		"zip": "12345
+	}
+}
+
+Subset Pattern:
+// movies document.
+{
+	"_id": 145,
+	"title": "The Matrix",
+	"year": 1999,
+	"plot": "kjhdsafwl safdlsadf asfdlmasl;fdkdsal;fkdsa lfsad ksadfdsafmsaf",
+	"fullplot": "lkjsafdlk jalkfdjaksjfkds flksadflkdsaflkdsajflkdsafjsakdfjsakfsakf sadfkjdsaflkdsaf asfd",
+	"director": "Mr. X",
+	"genres": ["Action", "Sci-Fi"],
+	"countries": ["USA", "UK", "France"]
+}
+
+Solution: Subset
+// movies document.	(movies collection)
+{
+	"_id": 145,
+	"title": "The Matrix",
+	"year": 1999,
+	"director": "Mr. X",
+	"genres": ["Action", "Sci-Fi"],
+}
+
+// movies_details document. (movies_details collection)
+{
+	"_id": 1,
+	"movieId": 145, 
+	"plot": "kjhdsafwl safdlsadf asfdlmasl;fdkdsal;fkdsa lfsad ksadfdsafmsaf",
+	"fullplot": "lkjsafdlk jalkfdjaksjfkds flksadflkdsaflkdsajflkdsafjsakdfjsakfsakf sadfkjdsaflkdsaf asfd",
+	"countries": ["USA", "UK", "France"]
+}
+
+Mutliplicity:
+One-to-One Relationship:
+1 patron, 1 address.
+{ 
+	"_id": "Joe", 
+	"name": "Joe Broker",
+	"address": {
+		"street": "123 Fake Street",
+		"city": "FakeCity",
+		"state": "FakeState"
+		"zip": "12345
+	}
+}
+
+One to Many Relationship
+1 patron, many addresses.
+{ 
+	"_id": "Joe", 
+	"name": "Joe Broker",
+	"address": [{
+		"street": "123 Fake Street",
+		"city": "FakeCity",
+		"state": "FakeState"
+		"zip": "12345
+	},
+	{
+		"street": "879 AnotherFake Street",
+		"city": "AnotherFakeCity",
+		"state": "AnotherFakeState"
+		"zip": "98765
+	}
+	]
+}
+
+SQL vs NoSQL:
+1. SQL is used to work on structured data in a relational format. NoSQL is used to work on structured and non-structured data.
+2. SQL is schema-based. NoSQL is not (no fixed schema).
+3. SQL suppports Structured Query Language. NoSQL is more of a declarative query language.
+4. SQL table-based data. NoSQL is document-oriented.
+5. SQL is vertically scalable. NoSQL is horizontally scalable.
+6. SQL is more for transactional data. NoSQL is more for Big Data (distributed).
+7. SQL is relational. NoSQL is non-relational.
+8. SQL does not support hierarchical data. NonSQL supports hierarchical data.
+9. Features: SQL: ACID (Atomicity, Consistency, Isolation, Durability). NoSQL: CAP (Consistency, Availability, Partition Tolerance) and BASE (Basically Available, Soft State, Eventual Consistency)
+
+Atomicity:
+Commits finish an entire operation successfully or the database rolls back to its prior state.
+For e.g;.
+	Banking txn, transfer money from AccountA to AccountB
+		Withdrawing from AccountA - Reduce the balance.
+		Depositing into AccountB - Increase the balance.
+	TRANSACTRION BEGIN
+	1. Reduce balance in AccountA
+	2. Increase balance in AccountB
+	3. Record the transaction.
+	COMMIT
+	
+Your data will not reconcile!!!	
+Either everything succeeds OR everything fails!!!
+If any one fails, all operations in the txn will be rolled back!
+
+Consistency:
+Any change to the data maintains the integrity of the data or else it is cancelled completely.
+
+Isolation:
+Any read or write will not be impacted any other read/write in a separate transaction on the same database.
+
+Durability:
+If a commit was successful, the data is guaranteed to be there permanently!!! Unless it is explicitly deleted.
+
+
+Partition Tolerance: Sharding!
+
+NoSQL Features:
+CAP (Consistency, Availability, Partition Tolerance)
+BASE
+	Basically Available:
+		The system is guaranteed to be avaiable in case of a failure.
+	Soft State:
+		The state of the data could change due to eventual consistency.
+	Eventual Consistency:
+		The system will be eventually consistent, meaning, the data will be replicated to different nodes (servers) and will eventually reach a consistent state.
+
+How to use Scala to work with MongoDB?:
+	acme.mongodbserver:27017
+	111.22.33.44:27017
+	acme.mongodbserver.com
+	acme.mongodbserver.com:27017
+
+	// Connect to the server.
+    val client: MongoClient = MongoClient()     // localhost:27017
+	// Get an object to the db.
+    val database: MongoDatabase = client.getDatabase("test")		// use test
+    // Get a Collection.
+    val collection: MongoCollection[Document] = database.getCollection("test")	// db.test
+	
+	// { "_id": 0, "name": MongoDB", "type": "database", "count": 1, "info": {"x": 203, "y": 102} }
+	val doc: Document = Document(
+      "_id" -> 0,
+      "name" -> "MongoDB",
+      "type" -> "database",
+      "count" -> 1,
+      "info" -> Document("x" -> 203, "y" -> 102)
+    )
+	
+	

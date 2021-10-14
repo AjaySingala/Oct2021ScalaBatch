@@ -1,0 +1,130 @@
+Iteration: Sprints (Sprint cycle)
+	2-week Sprint Cycle.
+	we will complete x number of requirements
+	5 developers (include leads)
+	1 BA
+	Testers: 2
+	1 PM
+	1 Scrum Master
+	PO: Product Owner
+		Creates a Product Backlog (a list of user stories)
+		Priotitizes the backlog
+
+Sprint Ceremonies
+	Day 1: Sprint Planning, Backlog Grooming.
+		Identify the complexity of the stories.
+		Collaborate and get the specific details from the BA / PO.
+	Daily: DSU
+	Last Day: Demo / Review, Retrospective.
+		Retrospective:
+			1) What went well?
+			2) What did not go well?
+			3) Action items (on how to improve)
+	End of Sprint and before start of next Sprint (PO/BA): Backlog Refinement.
+		
+Day 1:
+	Team will pick user stories (based on priority)
+	3 user stories
+	developers start working on the code
+	testers start working on their test cases, automation scripts
+2-weeks:
+	4th day, DevA is done.
+		Given to tester.
+		Testers runs test cases.
+		Logs some defects.
+		DevA fixes the defects.
+		
+	On the last day:
+		3 user stories have to be conmpleted (dev, testing)
+		BA does the tesyting (UAT)
+		demo is given to the PO
+		PO approve
+		PO reject some / all of them
+	Meet daily:
+		Daily Stand Up (DSU)
+			max 15 minutes
+			1) What did you do yesterday?
+			2) What will you do today?
+			3) Any blockers / issues / show-stoppers?
+			
+SP1
+SP2
+	
+SP3
+	Team has picked 3 user stories.
+		US1: Medium
+		US2: Medium
+		US3: Low
+		Defects from previous Sprint(s)
+	Day 3:
+		PO: Add US4 also. (Low)
+			Capacity to take on additional work.
+		Production issue to be resolved.
+			Fix a PROD defect.
+			Stop working on US3 for now till PROD defect is fixed.
+			
+Product Backlog:
+	Epic
+		Stories
+			Tasks (time spent)
+				Sub-tasks (time spent)
+		Defects / bugs
+	Customer Management (Epic)
+		Create a new customer
+			Analysis 
+			Development
+				DB related
+			Unit Testing (developer)
+			QA Testing (tester)			
+		Modify profile
+		Change password
+		Add additional new addresses
+		
+User Story: Low Medium High
+Estimates (Guesstimates): 
+	Story Points:
+		Low 3
+		Medium 5
+		High 8
+	
+Fibonacci sequence: 0 1 1 2 3 5 8 13 21
+	beyond 8, i.e.; 13 and above,
+		then split the story
+		
+
+
+US1: 5. Take 15 hours.
+US2: 5. Take 18 hours.
+
+SP3:
+	US1: 5
+	US2: 5
+	US3: 8
+
+SP4:
+	US1: 5
+	US2: 5
+	US3.a: 5
+
+One US of 13 points, 
+		split into 3 US of 5 points each. (15)
+		(split into 2 US, of 5 and 3 each)
+SP5: US3.b 5
+
+
+SP1:
+	US: 5 5 3 = 13 to be delivered in SP1
+	
+SP2:
+	US: 5 5 5 = 15 to be delivered in SP2
+	Total:       28
+SP3:
+	US: 5 5 5 = 15 to be delivered in SP3
+	Total:       43
+	Velocity: 43 / 3 14
+SP4:
+	US: 8 8 8 = 24 to be delivered in SP3
+	Velocity: 13
+	
+SP: 13
+SP: 21
