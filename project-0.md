@@ -1,15 +1,14 @@
 ### Project 0
-A Scala CLI (Command Line Interface) application.  Data should be parsed from a CSV OR JSON file and persisted to MongoDB.  The functionality of the application beyond that is up to you, but here are a few suggestions:
+A Scala CLI (Command Line Interface) application.  Data should be parsed from a CSV OR JSON file and persisted to MongoDB OR Postgres.  The functionality of the application beyond that is up to you, but here are a few suggestions:
 - journal app
 - banking app
 - business management system
 - simple text-based game
 - productivity tool
-- ecommerce app (customers,products, categories, orders)
 - ...?
 
 ## Application Requirements
-- Your application must perform basic CRUD (Create, Read, Update, Delete) functionality with data stored in a database
+- Your application must perform basic CRUD functionality with data stored in a database
 - Your application must be able to read JSON or CSV files, and store the data contained within those files in a database
 - Your application should have a CLI where users can interact with the application while it is running
 - Other than those requirements, the kind of application you have is up to you.
@@ -18,7 +17,7 @@ A Scala CLI (Command Line Interface) application.  Data should be parsed from a 
 - Scala 2.13
   - File I/O
   - Collections
-- MongoDB
+- MongoDB or PostgreSQL
 - sbt
 - git SCM (+ GitHub)
 
@@ -26,7 +25,7 @@ A Scala CLI (Command Line Interface) application.  Data should be parsed from a 
 - 5 minute live demo.  Present the application, not the code.
 
 ## Due Date
-- Project 0 will be presented Wednesday (Wednesday week 3)
+- Project 0 will be presented Wednesday, January 20 (Wednesday week 3)
 
 Finishing your MVP (Minimum Viable Product) as early as possible before iterating new features upon the project is highly recommended.  Plan ahead, and be sure to reach out to others when you need guidance (or offer your own to those in need).  You are *REQUIRED* to be able to explain your project functionality and write your own code, but feel free to have in-depth discussions with others.
 
