@@ -1,0 +1,7 @@
+Your Name
+A brief summary of your selection
+	which trending topic
+	where is the data coming from
+
+Whether using Hive or MapReduce
+6 (or more) analysis questions
