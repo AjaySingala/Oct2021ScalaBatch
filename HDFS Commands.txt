@@ -1,0 +1,43 @@
+HDFS commands:
+	use either of:
+		hadoop fs
+		hdfs dfs
+
+	hdfs dfs -ls .			list contents of current folder of the current user on HDFS.
+	hdfs dfs -mkdir <dir>	make dir on HDFS in /user/<current user>
+	hdfs dfs -mkdir /<dir>	make dir on HDFS in root (/) folder
+	hdfs dfs -mkdir /temp/abce	make dir on HDFS in at the given path
+	
+	hdfs dfs -rmdir <dir>	remove dir.
+	
+	hdfs dfs -copyFromLocal <src on local> <target on HDFS>
+	hdfs dfs -put <src on local> <target on HDFS>
+	
+	hdfs dfs -cat <file on HDFS>
+	
+	hdfs dfs -copyToLocal <src on HDFS> <target on local>
+	
+	hdfs dfs -moveFromLocal <src on local> <target on HDFS>
+
+	hdfs dfs -cp <src on HDFS> <target on HDFS>
+	hdfs dfs -mv <src on HDFS> <target on HDFS>
+
+	hdfs dfs -du <path on HDFS>
+	hdfs dfs -stat <path on HDFS>
+	
+	// Change replication factor on HDFS.
+	hdfs dfs -setrep -R 5 /tmp			// -R: recursive
+	hdfs dfs -setrep -R -w 5 /tmp		// -w: wait till replication is completed.
+	
+	hdfs dfs -rm -r <folder on HDFS>	// Delete files from  HDFS recursively.
+	hdfs dfs -rmr <folder on HDFS>		// Deprecated.
+	
+hadoop jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming-2.7.3.2.6.5.0-292.jar \
+-file /home/maria_dev/PythonSamples/mapper.py    -mapper /home/maria_dev/PythonSamples/mapper.py \
+-file /home/maria_dev/PythonSamples/reducer.py   -reducer /home/maria_dev/PythonSamples/reducer.py \
+-input /tmp/gutenberg/* -output /tmp/gutenberg-output
+
+If you want to modify some Hadoop settings on the fly like increasing the number of Reduce tasks, you can use the -D option:
+hadoop jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-streaming-2.7.3.2.6.5.0-292.jar \
+-numReduceTasks=5 …
+
