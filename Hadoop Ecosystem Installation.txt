@@ -47,6 +47,7 @@ Custom VM:
 ----------
 Ubuntu: 20.04
     https://ubuntu.com/download/desktop
+	https://thelinuxuser.com/install-ubuntu-20-04/
 Java: 1.8.0_292
 Hadoop: hadoop-3.2.2
     https://phoenixnap.com/kb/install-hadoop-ubuntu

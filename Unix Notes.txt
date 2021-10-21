@@ -1,0 +1,164 @@
+Start the Hortonworks HDP VM from VirtualBox.
+Start the Ambari Dashboard:
+	http://lcoalhost:1080
+To connect to the VM remotely via SSH:
+	http://localhost:4200
+From PuTTY:
+	maria_dev@217.0.0.1
+	Port: 2222
+
+Commands:
+	ls		List directories / folders
+	pwd		Present Working Directory
+	In Unix: every user has their own "home" folder a.k.a. default folder.
+		/home/username
+		/home/ajay
+		/
+		There is no C: or D:
+	cd		Change Directory
+	cat 	Show contents of a file.
+	clear	Clear Screen
+	ls -l 	List contents of dir in long format
+		rwxrwxrwx	- Read Write Execute
+		Users in unix are in 3 different categories:
+			Owner	o
+			Group	g
+			Users	u
+	Hidden files / folders begin with a dot (.)
+	ls -a 	Show all files including hidden files.
+	ls -a -l 	all files in long format
+	ls -l -a
+	ls -al
+	ls -la
+	
+	top most folder is called the "root" folder represented by "/"
+	cd ~	go to home dir of curr logged on user
+	cd 		go to home dir of curr logged on user
+	
+	mkdir dir1
+	cd dir1
+	mkdir dir2
+	cd dir2
+	mkdir dir3
+	cd ~
+	echo "some text" > ./dir1/dir2/dir3/file1.txt
+	
+	ls ./dir1/dir2/dir3 -al
+	
+	rmdir	remove/delete a folder
+	mkdir -p folder1/folder2/folder3	Create folder hierarchy
+	
+	>	redirection overwrite contents of file.
+	>>	redirection append to the file.
+	
+	UNIX is case sensitive for file and folder names and even commands
+	
+	cp <source> <target>		Copy file from source to target
+	~ 		/home/maria_dev (home dir of current user)
+	
+	mv <src> <target>			Move file
+		mv can als obe used to rename a file.
+		
+	less <filename>		Show file contents page wise. Use arrow keys or PgUp/PgDn. :q to exit.
+	
+	ls -lh				long format in human readable file sizes
+	-R					recursive
+	-r 					reverse order
+	
+	alias ls='ls -l'
+	unalias ls
+	
+	rm 					remove/delete files
+	rmdir				remove/delete folders/directories
+	
+	ls -R | less		paginate out of ls -R
+	
+	grep				serach a file for a particular pattern of characters and displays the lines that match the pattern.
+	
+	
+	chmod 				Change mode
+	ref:
+	u 					user
+	g					group
+	o					other
+	a					all
+	operators
+	+					add the permission (rwx)
+	-					remove the permission (rwx)
+	=					assign new permission (rwx)
+	
+	chmod refoperatorpermisison <filename or folder>
+	chmod g+w somefile.txt
+	
+	chmod with numbers
+		1: can execute
+		2: can write
+		4: can read
+		
+		position:
+			1: what the owner (user) can do
+			2: what the group can do
+			3: what the other users can do
+			
+		chmod 600 file.txt			owner can read and write.
+		chmod 700 file.txt			owner can read, write and execute.
+		chmod 030 file.txt			group can write and execute.
+		chmod 777 file.txt			all can rwx
+		chmod 666 file.txt			all can rw
+		
+	Search and Replace using sed - stream editor.
+		-i : in-place replacement
+		s/search/replace/g
+		
+	vi editor
+		2 modes:
+			Insert
+				i		insert at current cursor position.
+				a		append after current position.
+				I		insert before 1st character on current line.
+				A		append after last character on current line.
+			Command
+				ESC
+				:w		write
+				:q		quit
+				:q!		quit without saving (forcefully quit)
+				:wq		write and quit
+				j:		move 1 line up (up arrow)
+				k:		move 1 line down (down arrow)
+				h:		move left 1 position
+				l:		move right 1 position
+				dd		delete current line.
+				u 		undo last action/cmd.
+				2dd		delete 2 lines starting with the current line.
+				yy		yank / copy the current line.
+				p 		paste
+				2yy		yank 2 lines starting with current line
+				rx      replace current character with "x" and immediately switch to CMD mode.
+				/<search text>	search for the given text
+				n 		go to next search result.
+				^		go to 1st char on current line.
+				$		go to last char on current line.
+				w 		move to 1st char of next word.
+				b		move to 1st char of previous word.
+				dw		delete from current position to start of next word.
+				2dw		delete 2 words from current position.
+				:n		go to line number n
+				:set nu	show line numbers
+				:0		go to beginning of 1st line
+				:$		go to beginning of last line
+				s/src/rep/g 	search for given word "src", replace with "rep" in current line. "g" is all occurences.
+				%s/src/rep/g		search for given word "src", replace all occurences on all lines with "rep" in current line.
+				%s/\<src\>/rep/g	search for the full word "src".
+				%s/\<src\>/rep/gc	ask for confirmation.
+				%s/\<src\>/rep/gci	ask for confirmation and ignore case.
+				%s/\<src\>/rep/gcI	ask for confirmation and case sensitive (default).
+				
+	nano editor
+		sudo apt install nano
+		sudo yum install nano
+		nano --version
+	some more commands
+		find, history, ps, kill, nohup (no hanghup)
+	disk and partitions related commands:
+		df,fdisk, sfdisk, cfdisk,lsblk, blkid, mdadm
+	
