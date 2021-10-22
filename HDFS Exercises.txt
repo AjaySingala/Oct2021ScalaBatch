@@ -1,0 +1,18 @@
+1.start the all daemons and check whether daemons are started or not.
+2.Create a new directory called revenue, inside directory called sales in one command.
+3.Copy the existing file into the revenue directory.
+4.Create a directory called product, copy all files in any folder from your local disk into the hdfs directory product.
+5.list the files from the product directory and view the content of the file in the revenue directory.
+6.Download the files from HDFS directory called product and cop into localhost directory called input.
+7.Merge two files using HDFS commands.
+8.Move revenue directory to product directory in hdfs.
+9.Remove sales directory from hdfs.
+10.Check the working processess files in hdfs.
+11.Different varieties of working with namenode. 
+12.List the variety of permissions.
+13.Display all the process in your localhost.
+14.Stop a running job.
+15.View the process which is run in specific user.
+16.Use setrep command to change replication factor of the file.
+17.Append the existing file from local host to hdfs.
+18.How to change namenode to safemode.
