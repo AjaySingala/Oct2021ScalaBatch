@@ -1,0 +1,269 @@
+Databases:
+	OLTP: OnLine Transaction Processing
+		is for transactional data
+		For e.g.; orders, customers, banking, products, stock prices
+	OLAP: OnLine Analytics Processing
+		If the analysis is done on live data (OLTP), it will slow down the (DB) server. Resulting in performance degradation of the application itself.
+		The data that is to be analyzed is transferred / copied / dumped into another database where it can be processed, ananlyzed etc. without hampering the performance of the app.
+		It is Denormalized data:
+			Original data:
+			customers: id name address city state
+			orders: id date customerid
+			order_details: id orderid productid qty rate
+			Denormalized data:
+			city state productid productname qty rate month year
+		The process of transferring the data from OLTP to OLAP is called ETL: Extract Transform Load
+		OLAP databases are known as Data Warehouses
+		
+Partitioning:
+	splitting the data into smaller units:
+		get data for a specific state: FL
+		create partition based on the column "STATE"
+		FL
+		MA
+		CA
+		WA
+		
+		SELECT ... FROM table WHERE State = "FL"
+Bucketing:
+	Qty
+		1
+		2
+		10
+		15
+		12
+		8
+	Create 3 buckets based on the values in the "Qty" column:
+		numbered 0, 1, 2
+		HashFunction(1) % (modulo) no. of buckets requested (3)...whatever the result, that record will be stored in that correspoinding bucket
+		HashFunction(10) % 3 = 0,1,2
+		HashFunction(12) % 3 = 0,1,2
+Partitions and Buckets
+	P:FL=B0,B1,B2
+Hive (HiveQL commands):
+show databases;
+
+CREATE DATABASE:
+create database demo2;
+create database if not exists demo2;
+create database demo2 WITH DBPROPERTIES ('creator' = 'Ajay Singala', 'data' = '2021-10-26');
+
+DESCRIBE DATABASE demo2;
+
+DROP DATABASE IF EXISTS demo2;
+DROP DATABASE IF EXISTS demo2 CASCADE;
+
+SHOW TABLES;
+
+CREATE TABLE:
+	Internal Table:
+		Managed Tables because the lifecycle of the data in these tables is controlled by Hive.
+		These tables are stored in a sub-dir on hdfs under a dir defined by the property "hive.metastore.warehouse" found in hive-site.xml.
+		When you delete an internal (managed) table, Hive will delete the table and the data as well.
+		You have to create the table and then load the data into Hive explicitly. 
+	External Table:
+		The lifecycle of the data in these tables is NOT controlled by Hive.
+		When you delete an external table, Hive will delete the table, but not the data.
+		Used to indicate that the data is external to Hive and when creating an external table, you have to specify the location of the data (on HDFS).
+		
+CREATE TABLE [dbname.]employee (Id int, Name string, Salary float)
+row format delimited
+fields terminated by ',';
+	
+CREATE TABLE employee (Id int, Name string, Salary float)
+row format delimited
+fields terminated by ',';
+
+CREATE TABLE IF NOT EXISTS employee (Id int, Name string, Salary float)
+row format delimited
+fields terminated by ',';
+
+CREATE TABLE employee (Id int, Name string comment 'Employee Name', Salary float comment 'Employee Salary')
+comment 'This is the Employee table'
+TBLPROPERTIES('creator' = 'Ajay Singala', 'data' = '2021-10-26')
+row format delimited
+fields terminated by ',';
+
+CREATE TABLE employee_clone LIKE employee;
+CREATE TABLE IF NOT EXISTS employee_clone LIKE employee;
+
+External Table:
+CREATE EXTERNAL TABLE emp_details (Id int, Name string, Salary float)
+row format delimited
+fields terminated by ','
+location '/HiveDirectory';
+
+LOAD DATA into internal table:
+From local:
+LOAD DATA LOCAL INPATH '/home/maria_dev/tmp/hive/emp_details2' INTO TABLE employee;
+LOAD DATA LOCAL INPATH '/home/maria_dev/tmp/hive/emp_details2' INTO TABLE demo2.employee;
+
+From HDFS:
+LOAD DATA INPATH 'hdfs path' INTO TABLE employee;
+
+ALTER a table:
+rename table: ALTER TABLE old_tablename RENAME TO new_tablename;
+ad column: ALTER TABLE tablename ADD COLUMNS (column1 datatype, col2 datatype...)
+rename column: ALTER TABLE tablename CHANGE existing_columnname new_columnname datatype;
+	ALTER TABLE employee CHANGE name Firstname String;
+delete column: ATLER TABLE tablename REPLACE COLUMNS(col1required type, col2required2, ....)
+
+SELECT * FROM employee LIMIT 10;
+
+Split:
+SELECT Firstname, split(Firstname, ' ')
+FROM employee
+
+SELECT Firstname, split(Firstname, ' ')[1]
+FROM employee
+
+Creating Partitions:
+Static Partitioning:
+	do not specify the partition column name in the schema when creating the table.
+	specify the column name with the 'partitioned by" clause.
+	do not include the value for the partitioned column name in the data file.
+	speicfy the partition name when loading the data.
+	The values of the paritioning columns DO NOT EXIST in the data file / table.
+	
+CREATE TABLE students (id int, name string, age int, institute string)
+partitioned by (course string)
+row format delimited
+fields terminated by ',';
+
+LOAD DATA LOCAL INPATH '/home/maria_dev/tmp/hive/students_bigdata.txt' INTO TABLE students partition(course="Big Data");
+/hive/students_bigdata/
+	batch01
+	batch02
+	batch03
+/hive/students_java/
+	batch01
+	batch02
+	batch03
+/hive/students_python/
+	batch01
+	batch02
+	batch03
+
+Dynmaic Partitioning:
+	The values of the paritioning column exist in the data file / table.
+	So, it is not required to pass the values of the partition columns manually.
+	To achieve this, you have to do some settings in Hive:
+		set hive.exec.dynamic.partition=true;
+		set hive.exec.dynamic.partition.mode=nonstrict;
+		
+CREATE TABLE student_demo(id int, name string, age int, course string)
+row format delimited
+fields terminated by ',';
+
+LOAD DATA LOCAL INPATH '/home/maria_dev/tmp/hive/students.txt' INTO TABLE student_demo;
+
+CREATE TABLE student_dyn(id int, name string, age int)
+partitioned by (course string)
+row format delimited
+fields terminated by ',';
+
+INSERT INTO student_dyn
+partition(course)
+SELECT id, name, age, course
+FROM student_demo;
+
+Bucketing:
+CREATE TABLE emp_demo( id int, name string, salary float)
+row format delimited
+fields terminated by ',';
+
+LOAD DATA LOCAL INPATH '/home/maria_dev/tmp/hive/emp_details' INTO TABLE emp_demo; 
+
+set hive.enforce.bucketing=true;
+
+CREATE TABLE emp_bucket( id int, name string, salary float)
+clustered by (id) into 3 buckets
+row format delimited
+fields terminated by ',';
+
+INSERT OVERWRITE TABLE emp_bucket
+SELECT * FROM emp_demo;
+
+HiveQL Operators:
+Arithmetic Operators:
+	+ - * / %
+	SELECT Id, name, Salary + 50 FROM employee;
+Comparision or Relational Operators:
+	= <> != < <= > >= 
+	IS NULL
+	IS NOT NULL
+	
+	SELECT id, name, salary
+	WHERE name IS NOT NULL
+
+HiveQL Functions:
+	round(num): SELECT id, name, round(salary)
+	split: 
+	sqrt
+	
+HiveQL Aggregate Functions:
+	COUNT
+	SUM
+	AVG
+	MIN
+	MAX
+	
+	SELECT MAX(salary) FROM employee;
+
+Other built-in functions:
+	length(str)
+	reverse(str)
+	concat(str1, st2,....)
+	substr(str, start_index)
+	upper(str)
+	lower(str)
+	trim(str)
+	ltrim(str)
+	rtrim(str)
+	
+GROUP BY and HAVING:
+CREATE TABLE emp_group (id int, name string, salary float, dept string)
+row format delimited
+fields terminated by ',';
+
+LOAD DATA LOCAL INPATH '/home/maria_dev/tmp/hive/emp_data_grouping' INTO TABLE emp_group;
+
+SELECT Dept, SUM(Salary) 
+FROM emp_group 
+GROUP BY Dept;
+ 
+SELECT Dept, SUM(Salary) 
+FROM emp_group 
+WHERE Dept = 'Clerk';
+GROUP BY Dept
+
+SELECT Dept, SUM(Salary) 
+FROM emp_group 
+GROUP BY Dept
+HAVING SUM(Salary) > 40000;
+
+ORDER BY and SORT BY:
+SELECT Id, Name, Salary, Dept 
+FROM emp_group 
+ORDER BY Dept;
+
+SELECT Id, Name, Salary, Dept 
+FROM emp_group 
+SORT BY Dept;
+
+JOINs:
+SELECT e.id, e.name, e.salary, d.deptid, d.dept_name
+FROM emp e
+JOIN dept d ON e.deptid = d.deptid
+
+SELECT e.id, e.name, e.salary, d.deptid, d.dept_name
+FROM emp e
+LEFT OUTER JOIN dept d ON e.deptid = d.deptid
+
+SELECT e.id, e.name, e.salary, d.deptid, d.dept_name
+FROM emp e
+RIGHT OUTER JOIN dept d ON e.deptid = d.deptid
+
+SELECT e.id, e.name, e.salary, d.deptid, d.dept_name
+FROM emp e
+FULL OUTER JOIN dept d ON e.deptid = d.deptid
