@@ -58,7 +58,7 @@ SHOW TABLES;
 CREATE TABLE:
 	Internal Table:
 		Managed Tables because the lifecycle of the data in these tables is controlled by Hive.
-		These tables are stored in a sub-dir on hdfs under a dir defined by the property "hive.metastore.warehouse" found in hive-site.xml.
+		These tables are stored in a sub-dir on hdfs under a dir defined by the property "hive.metastore.warehouse" found in hive-site.xml (in the "conf" folder where hive is installed).
 		When you delete an internal (managed) table, Hive will delete the table and the data as well.
 		You have to create the table and then load the data into Hive explicitly. 
 	External Table:
@@ -267,3 +267,44 @@ RIGHT OUTER JOIN dept d ON e.deptid = d.deptid
 SELECT e.id, e.name, e.salary, d.deptid, d.dept_name
 FROM emp e
 FULL OUTER JOIN dept d ON e.deptid = d.deptid
+
+Imp characteristics of Hive:
+	Tables and Databases, but Hive is distributed Datawarehouse (DW).
+	It is not a regular RDBMS.
+	Hive uses MapReduce internally to process queries.
+	MapReduce does not have optimization or cutomization features, like creating UDFs (User Defined Functions).
+	Hive's QL is inspired by SQL - reuses familiar concepts from RDBMS.
+	Hive works with HDFS and files (usually CSVs), can be used to create Paritions and Buckets.
+	Hive has a Metastore that stores info about the data (schema etc.) in a separate RDBMS db (Apache Derby, MySQL).
+	Hive can be used from CLI or WebUI and along with JDBC/ODBC drivers.
+	Hive supports 4 file format:
+		1. TEXT FILE
+		2. Optimized Row Columnar (ORC)
+		3. sequence files: The sequence files are in binary format and these files are able to split. The main advantages of using sequence file is to merge two or more files into one file.
+		4. RCFile: Hive added the RCFile format in version 0.6. 0. RCFile stores table data in a flat file consisting of binary key/value pairs. It first partitions rows horizontally into row splits, and then it vertically partitions each row split in a columnar way.
+Points to remember about HiveQL:
+	HiveQL will always run on the Hadoop infrastructure (using HDFS, MapReduce...). SQL will run the respective SQL engine.
+	HiveQL execution is a series of MapReduce jobs/tasks.
+	Hive supports paritions and buckets.
+	Hive supports UDFs as well.
+
+	
+Scala - Hive:
+Copy file from local to HDP:
+	scp -P 2222 <path to local file> maria_dev@sandbox-hdp.hortonworks.com:/home/maria_dev
+To run on the VM:
+	spark-submit <path to jar> --class packagename.mainobjectname
+	spark-submit ./scalahive_2.11-0.1.0-SNAPSHOT.jar  --class example.HiveDemo
+	
+Hive UDF:
+User Defined Functions
+Steps:
+	create the code in Java or Scala
+	create a package (.jar)
+	Add the jar to Hive:
+		hive> add jar <path to jar>;
+		hive> add jar ./customHiveUdfs.jar;
+		hive> list jars;
+	Create a UDF in Hive:
+		hive> CREATE FUNCTION MyLowerCase AS 'org.hive.custom.udf.MyCustomLowerCaseUDF'
+		hive> SELECT col1, col2, col3, MyLowerCase(col4) FROM sometable;

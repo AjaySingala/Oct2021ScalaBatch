@@ -1,0 +1,58 @@
+Java:
+https://dzone.com/articles/writing-custom-hive-udf-andudaf
+
+Data in CSV:
+101,2016-01-01,7,3540
+102,2016-03-01,1,240
+103,2016-03-02,6,2340
+104,2016-02-12,3,5000
+105,2016-02-12,3,5500
+106,2016-02-14,9,3005
+107,2016-02-14,1,20
+108,2016-02-29,2,2000
+109,2016-02-29,3,2500
+110,2016-02-27,1,200
+
+$cd udfdemojava
+$hdfs dfs -mkdir ./orders
+$hdfs dfs -put ./orders.csv ./orders
+$mvn clean package
+
+hive> ADD /home/hdoop/udfdemojava/target/udfdemojava-0.0.1-SNAPSHOT.jar;
+hive> list jars;
+hive> CREATE TEMPORARY FUNCTION STRIP AS 'example.Strip';
+hive> select strip('hadoop','ha');
+hive> select strip('   hiveUDF ');
+
+UDAF Java:
+hive> create external table if not exists default.orders (order_id int, order_date string, customer_id int, amount int)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/user/hdoop/orders';
+
+hive> select * from orders;
+hive> SELECT CUSTOMER_ID, AVG(AMOUNT) FROM ORDERS GROUP BY CUSTOMER_ID;
+
+If not already done:
+hive> ADD /home/hdoop/udfdemojava/target/udfdemojava-0.0.1-SNAPSHOT.jar;
+hive> list jars;
+hive> CREATE TEMPORARY FUNCTION MeanFunc AS 'example.MeanUDAF';
+hive> select customer_id, MeanFunc(amount) from orders group by customer_id;
+
+
+Scala:
+https://dzone.com/articles/creating-a-simple-hive-udf-in-scala
+https://tuttlem.github.io/2017/02/17/create-a-udf-for-hive-with-scala.html
+add jar /home/hdoop/udfdemos/udf/target/scala-2.12/udf_2.12-0.1.0-SNAPSHOT.jar;
+list jars;
+CREATE FUNCTION trim AS 'example.Scala_Hive_Trim_Udf';
+select trim('     hello    ');
+
+CREATE FUNCTION trimstring as 'example.TrimString';
+CREATE FUNCTION toUpperCase as 'example.UpperCaseString';
+CREATE FUNCTION toLowerCase as 'example.LowerCaseString';
+
+select trimstring('     hello    ');
+SELECT toUpperCase('a test string');
+SELECT toLowerCase('DON\'T YELL AT ME!!!');
