@@ -1,0 +1,114 @@
+Spark:
+spark-shell is like an REPL, hive, mongo
+Apache Spark is considered to be a "Hadoop (MapReduce") killer".
+It is also no, 1 Big Data tool these days.
+It is ~100 times faster than MapReduce.
+It integrates quite well with Hadoop.
+Common mis-belief that Spark is a modified version of Hadoop! Wrong!!!
+Features:
+	Speed: faster than MR.
+	Support for multiple languages: Java, Scala, Python.
+	Advaned analytics: SQL queries, Streaming data, ML and Graph algorithms.
+MapReduce vs Spark:
+	Topic			Hadoop MapReduce		Spark
+	Storage			disk only.				in-memory, on disk.
+	Operations		Map and Reduce			Map, Reduce, Join, Aggregations...
+	Exeuction Model	Batch					Batch, interactive, streaming.
+	Programming env	Java					Java, Scala, Python, R.
+Spark components:
+	Apache Spark Core
+		Spark SQL
+		Spark Streaming
+		MLib (Machine Learning)
+		GraphX (graph)
+Spark is written in Scala.
+
+RDD - Resilient Distributed Dataset
+Fundamental data structure in Spark.
+immutable.
+Each dataset in an RDD is divided into logical partitions, which may be computed on separate nodes on the cluster.
+RDDs can contain objects of any type (for the supported languages: JAva, scala, Python, R), including any user-defined classes.
+Resilient: means it is able to withstand /recover very quickly from any lost connection, downtime.
+
+There are 2 ways to create RDDs in Spark:
+1. Parallelizing existing collection of data.
+2. Directly referencing datasets in an external storage system (for e.g.; AWS S3 or HDFS).
+
+DataSharing in MapReduce is slow.
+
+Shared Variables:
+	variables that are shraed over different nodes, for computation purpose.
+	two types:
+		broadcast variables: used to cache values in memory on all the nodes.
+		Accumulators: used to perform aggregations (counters, sum, count...)
+
+2 types of operations that can be performed on RDDs:
+	Transformation: creates a new RDD after processing.
+		Lazy Evaluation methodology.
+		The function will be executed ONLY when you perform an action on the RDD.
+		map()
+		filter()
+		flatMap()
+		distinct()
+		groupByKey()
+			data is in (K,V)
+			return a dataset of (K, Iterable(V)) pairs.
+			"reston", 10
+			"dallas", 20
+			"reston", 35
+			"boston", 12
+			....
+			"reston", (10, 35)
+			"dallas", (20)
+			"boston", (12)
+		reduceByKey()
+		sortByKey()
+		cogroup()
+		
+	Action: do not change the content of the rdd. They only return the content of the rdd and do not generate a new RDD.
+		reduce()
+		collect()
+		count()
+		first()
+		take(n)
+		takeOrdered(n)
+		saveAsTextFile(path)
+		saveAsSequenceFile(path)
+		saveAsObjectFile(path)		only Java and Scala, uses Java Serialization.
+		countByKey()
+		foreach()
+		
+val newrdd = rdd.abc()
+println(rdd.collect())
+
+rdd.foreach(println)
+
+Spark UI: http://sandbox-hdp.hortonworks.com:4040
+
+val inputfile = sc.textFile("input.txt")
+
+val inputfile = sc.textFile("file:///home/maria_dev/SparkSamples/input.txt")
+val t1 = inputfile.flatMap(line => line.split(" "))
+t1.foreach(println)
+
+
+val t2 = inputfile.flatMap(line => line.split(" ")).map(word => (word,1))
+val t3 = inputfile.flatMap(line => line.split(" ")).map(word => (word,1)).reduceByKey(_+_)
+t2.foreach(println)
+t3.foreach(println)
+
+val t2 = t1.map(word => (word,1))
+val t3 = t2.reduceByKey(_+_)
+
+val t1:RDD[(String)] = inputfile.flatMap(line => line.split(" "))
+val t2:RDD[(String,Int)] = inputfile.flatMap(line => line.split(" ")).map(word => (word,1))
+val t3:RDD[(String,Int)] = inputfile.flatMap(line => line.split(" ")).map(word => (word,1)).reduceByKey(_+_)
+
+Some common Transformations:
+map(): iterates over every element in the RDD and performs the given function into a new RDD.
+flatMap(): map() will return only 1 element at a time. flatMap() will return a list of elements.
+filter(): returns a new RDD that contains only those elements that match the filter criteria (predicate) provided.
+reduceByKey(): works on a dataset of (K,V) pairs on the same machine where the same key are combined and result is stored in a new RDD.
+sortByKey()= 
+
+val words_sorted = t3.map(a => (a._2, a._1)).sortByKey()
