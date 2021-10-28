@@ -304,3 +304,70 @@ type is RDD[(String, String)]
 	where:	the key is the path of the file.
 			the value is the contents of the file.
 	
+union:
+val rdd1 =
+spark.sparkContext.parallelize(Seq((1,"jan",2016),(3,"nov",2014),(16,"feb",2014)))
+val rdd2 =
+ spark.sparkContext.parallelize(Seq((5,"dec",2014),(17,"sep",2015)))
+val rdd3 =
+ spark.sparkContext.parallelize(Seq((6,"dec",2011),(16,"may",2015)))
+val rddUnion = rdd1.union(rdd2).union(rdd3)
+rddUnion.foreach(println)
+
+
+intersection:
+val is1 = sc.parallelize(List("c","c","p","m","t"))
+val is2 = sc.parallelize(List("c","m","k"))
+val result = is1.intersection(is2)
+result.foreach{println}
+
+distinct:
+val rdd1 =
+spark.sparkContext.parallelize(Seq((1,"jan",2016),(3,"nov",2014),(16,"feb",2014),(3,"nov",2014)))
+val result = rdd1.distinct()
+println(result.collect().mkString(", "))
+
+groupByKey:
+val data =
+spark.sparkContext.parallelize(Array(('k',5),('s',3),('s',4),('p',7),('p',5),('t',8),('k',6)),3)
+
+val group = data.groupByKey().collect()
+group.foreach(println)
+
+join:
+val data =
+ spark.sparkContext.parallelize(Array(('A',1),('b',2),('c',3)))
+val data2 =
+spark.sparkContext.parallelize(Array(('A',4),('A',6),('b',7),('c',3),('c',8)))
+val result = data.join(data2)
+println(result.collect().mkString(","))
+
+repartition:
+val rdd = spark.sparkContext.parallelize(Range(0,20))
+println("From local : "+rdd.partitions.size)
+
+val rdd1 = spark.sparkContext.parallelize(Range(0,25), 6)
+println("parallelize : "+rdd1.partitions.size)
+
+val rddFromFile = spark.sparkContext.textFile("file:///home/maria_dev/SparkSamples/resources/spark_test.txt",10)
+println("TextFile : "+rddFromFile.partitions.size)
+
+rdd1.saveAsTextFile("file:///tmp/partition")
+
+val rdd2 = rdd1.repartition(4)
+println("Repartition size : "+rdd2.partitions.size)
+rdd2.saveAsTextFile("file:///tmp/re-partition")
+
+coalesce:
+val rdd3 = rdd1.coalesce(4)
+println("Repartition size : "+rdd3.partitions.size)
+rdd3.saveAsTextFile("file:///tmp/coalesce")
+
+cogroup:
+val data1 = sc.parallelize(Seq(("A",1),("B",2),("C",3)))  
+data1.collect  
+val data2 = sc.parallelize(Seq(("B",4),("E",5)))  
+data2.collect  
+val cogroupresult = data1.cogroup(data2)  
+cogroupresult.collect
+cogroupfunc.foreach(println)
