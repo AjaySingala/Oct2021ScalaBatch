@@ -37,7 +37,7 @@ There are 2 ways to create RDDs in Spark:
 DataSharing in MapReduce is slow.
 
 Shared Variables:
-	variables that are shraed over different nodes, for computation purpose.
+	variables that are shared over different nodes, for computation purpose.
 	two types:
 		broadcast variables: used to cache values in memory on all the nodes.
 		Accumulators: used to perform aggregations (counters, sum, count...)
@@ -112,3 +112,195 @@ reduceByKey(): works on a dataset of (K,V) pairs on the same machine where the s
 sortByKey()= 
 
 val words_sorted = t3.map(a => (a._2, a._1)).sortByKey()
+
+val data = Seq(("Project","A", 1),
+    ("Gutenberg’s", "X",3),
+    ("Alice’s", "C",5),
+    ("Adventures","B", 1)
+  )
+val rdd=spark.sparkContext.parallelize(data)
+
+val rdd2=rdd.map(f=>{(f._2, (f._1,f._2,f._3))}) 
+rdd2.foreach(println)  
+
+val rdd3= rdd2.sortByKey()
+OR
+val rdd3= rdd2.sortByKey(true,1)
+rdd3.foreach(println)
+println(rdd3.collect().mkString(","))
+
+// Descending.
+val rdd4= rdd2.sortByKey(false)
+OR
+val rdd4= rdd2.sortByKey(false,1)
+rdd4.foreach(println) 
+println(rdd4.collect().mkString(","))
+
+Another example of sortByKey:
+============================
+val data = Seq(("Project","A", 1),
+    ("Gutenberg’s", "X",3),
+    ("Alice’s", "C",5),
+    ("Adventures","B", 1)
+  )
+val rdd=spark.sparkContext.parallelize(data)
+
+// Convert to Key-Value pairs.
+val rdd2=rdd.map(f=>{(f._2, (f._1,f._2,f._3))}) 
+rdd2.foreach(println)  
+
+val rdd3= rdd2.sortByKey()
+// OR specify no. of partitions.
+//val rdd3= rdd2.sortByKey(true,1)
+rdd3.foreach(println)
+println(rdd3.collect().mkString(","))
+
+// Descending.
+val rdd4= rdd2.sortByKey(false)
+// OR specify no. of partitions.
+// val rdd4= rdd2.sortByKey(false,1)
+rdd4.foreach(println) 
+println(rdd4.collect().mkString(","))
+
+More actions:
+take(n): return "n" number of elements from the RDD. Tries to cut down on the number of partitions it accesses, it  represents biased data. We cannot presume the order of the elements.
+top(n): If ordering is present, we can extract the top "n" elements from the RDD. It uses the default ordering of data.
+
+val data = spark.sparkContext.parallelize(Array(('k',5), ('s',3), ('s',4), ('p',7), ('t',8), ('p',5), ('k',6)))
+val twoRecs = data.take(2)
+twoRecs.foreach(println)
+
+countByKey(): returns how many times each element occurs in an RDD. Returns a hashmap of K,V pairs.
+
+{1,2,2,3,4,5,5,6} 
+rdd.countByValue() will give the result as:
+{(1,1), (2,2), (3,1), (4,1), (5,2), (6,1)}
+
+countByValue() on a text file:
+val file = spark.read.textFile("spark_test.txt").rdd
+val result = file.map(line => (line, line.length)).countByValue()
+result.foreach(println)
+
+SparkContext and SparkSession:
+SparkContext is the entry point to Spark.
+Defined in org.apache.spark package.
+Default object is "sc".
+Use it to create a SparkContext object programmatically.
+Use the SparkContext object to create RDDs, Accumulators, Broadcast Variables on the cluster.
+Two diff ways to read a file:
+1) Using SparkContext: val rdd:RDD[String] = sc.textFile("filename")
+2) Using SparkSession: val rdd:RDD[String] = spark.read.textFile("filename").rdd
+
+If you are using the spark-shell, both of these (context and session) are available ready-to-use in variables "sc" and "spark" respectively.
+But if you are going to run your spark code from outside of spark-shell (using spark-submit), you have to create instances of both.
+For e.g.;
+val spark:SparkSession = SparkSession.builder()
+  .master("local[3]")
+  .appName("some name")
+  .getOrCreate()
+
+val sc = spark.sparkContext
+
+SparkSession was introduced in Spark 2.0.
+It is the entry point for the underlying functionality in Spark to create DataFrames, DataSets (to use SparkSQL) and even RDDs.
+Default object is "spark".
+Defined in org.apache.spark.sql package.
+SparkSession can be used to work with different APIs:
+	Spark Context
+	SQL Context
+	Streaming Context
+	Hive Context
+	
+val spark:SparkSession = SparkSession.builder()
+  .master("local[3]")
+  .appName("ajaysingala.com")
+  .getOrCreate()
+
+.master(...):
+"local"							=>	to run locally.
+"local[4]"						=> run locally with 4 cores.
+"spark://master:7077"			=> run on a single-node cluster.
+"acme.sparkcluster.org:7077"	=> specific location of the spark server.
+
+.appname("...")					=> set a application name that will appear on Spark Web UI.
+.getOrCreate()					=> Gets an existing instance (if any) or creates a new one.
+.config("config-key", value)	=> set configuration values.
+	.config("spark.driver.memory", "512m")
+	
+RDD Transformations:
+	DAG: Directed Acyclic Graph
+	RDD Transformations and create a new RDD from another, is known as "RDD Lineage".
+		a.k.a. RDD operator graph or RDD dependency graph.
+	RDD Transformations are lazy operations: none of the transformations get executed until you execute an action on an RDD.
+	RDDs are immutable.
+	Two types of transformations:
+		Narrow Transformation:
+			all the elements that are required to perform computation on the records in a single partition live in the single partition of the RDD.
+			A limited subset of partition is used to calculate the result.
+			Examples of narrow transformations: map() filter() flatMap()
+			These compute the data that live on a single partition. Meaning, there will not be any data movement between partitions to execute narrow transformations.
+			
+		Wide Transformation:
+			All the elements that are required to compute the records in a single partition may live in many partitions of the parent RDD.
+			examples: groupByKey() reduceByKey()
+			These transformations compute data that live on many partitions, meaning there will be data movement between partitions to exeucte wide transformations.
+			a.k.a. Shuffle Transformations.
+			
+Shared Variables:
+	variables that are shared over different nodes, for computation purpose.
+	two types:
+		broadcast variables: used to cache values in memory on all the nodes.
+			val broadcastVar = sc.broadcast(Array(1,2,3))
+		Accumulators: used to perform aggregations (counters, sum, count...)
+			accumulators are basically an initial value that can then be used by processes for further computation.
+			Spark natively supports accumulators of numeric types.
+			to create: sc.accumulator(initial value)
+			for e.g.; sc.accumulator(0)
+			val accnum = sc.accumulator(0)
+			val result = sc.parallelize(Array(1,2,3,4)).foreach(x => accnum += x)
+			
+fold()
+	a function to calculate min, max, total elements.
+	takes 2 params:
+		zeroValue: initial value (accumulator). Used to initialize the accumulator for each partition.
+			0 for numbers. Nil for collections.
+		op: operator used to both accumulate the results within a partition and combine the results from all the partitions.
+		
+	The param zeroValue is the initial value for the accumulated result of each partition for the op operator, and also the initial value for the combine results from different partitions for the op operator.
+		
+	is similar to reduce(), except that it takes an initial value to begin with (zeroValue)
+	
+val rddMarks = spark.sparkContext.parallelize(List(("Maths", 80), ("Science", 75), ("English", 82)))
+val additionalMarks = ("Extra", 4)
+val totalMarks = rddMarks.fold(additionalMarks) ((acc, marks) => { ("Total", acc._2 + marks._2) })
+println(totalMarks)
+
+val listRdd = spark.sparkContext.parallelize(List(1,2,3,4,5,3,2))
+(2+1+2) + (2+3+4) + (2+5+3) + (2+2) + 2	// (extra one for combining results)
+
+
+val rdd1 = sc.parallelize(List(1,2,3,4,5), 3)
+rdd1.fold(5)(_ + _)
+(5 + 1) + (5 + 2 + 3) + (5 + 4 + 5) + 5 // (extra one for combining results)
+
+Deploy Modes:
+cluster:
+	the driver runs on one of the worker nodes, and this node is the one that shows up Spark Web UI.
+	used to run production jobs.
+	spark-submit --deploy-mode cluster
+	the driver program does not run on the machine where it has been submitted, but it runs on the cluster as a sub-process of the Applicaiton Master (YARN).
+	If the driver program fails, it is re-instantiated automatically by the App Master.
+client:
+	the driver runs locally from where you submit the job, using spark-submit.
+	majorly used for debugging or interactive purpose.
+	Driver will run locally, but then the tasks run on the cluster worker nodes.
+	spark-submit --deploy-mode client
+	if the driver program fails, the entire job will fail.
+	
+Reading files:
+wholeTextFiles(): Read tet files into RDD of Tuple.
+val rddWhole = spark.sparkContext.wholeTextFiles("file:///home/maria_dev/SparkSamples/resources/csv/*")
+type is RDD[(String, String)]
+	where:	the key is the path of the file.
+			the value is the contents of the file.
+	
