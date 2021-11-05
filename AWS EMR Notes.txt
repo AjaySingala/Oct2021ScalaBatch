@@ -1,0 +1,313 @@
+AWS - Amazon Web Service
+
+Cloud Service Providers (CSPs) / Cloud Computing:
+	Amazon Web Service - AWS
+	Google Cloud Platform - GCP
+	Microsoft Azure
+
+Cost:
+On-premise:
+	3 servers, 2 people, rent a place, pay for electicity, licenses..
+	3 servers are under-utlized:
+		not beyond 40-50% utilization.
+	upfront cost
+	Capital Expenditure: $100k
+	Add 2 more servers.
+		cost - CapEx
+		may take some time: procure, configure, test
+	now you 5 servers.
+		demand goes down. Not enough traffic to your site.
+		2 servers you added are now overheads!!!	
+
+Cloud:
+	3 servers - managed by the cloud service provider
+		no people required for maintenance
+		no need to rent a place
+		no need to pay for electicity
+		minimal licenses cost
+	Pay-as-you-go: you get billed every month (OpEx = Operational Expenditure)
+	schedule to run only 1 server after 8 pm and before 8 am.
+		reducing cost: pay for only 1 server running 24 hours.
+	Provision 2 more servers
+		hardly a few minutes
+		now you 5 servers.
+			3 weeks of high-traffic, you pay for 2 more servers.
+		demand goes down. Not enough traffic to your site.
+		deprovision 2 servers.
+		go back to 3 servers. and pay for only 3 of them instead of 5.
+	Configure the load / provisioning:
+		if the CPU % goes beyond 80%, provision 2 more servers
+		if the CPU % goes below 50%, de-provision 2 more servers
+		At any given point in time, always have 3 servers running.
+		
+		between 8 am and 8 pm, provision 3 more servers
+		between 8 pm and 8 am, keep only 3 servers.
+		
+Virtual Machines:
+1 Server: Monolithic deployment architecture 
+	128GB RAM
+	4TB disk
+	32 CPU cores
+	Single point of failure!!!
+	
+instead have 4 machines
+	32 GB RAM
+	1TB disk
+	8 CPU cores
+Load balancing.
+
+instead of having 4 physical machines, use VMs.
+	create 1 VM and used that as the base image.
+	Provisioning becomes much faster.
+	
+Big Data on Cloud:
+	AWS EMR - Elastic MapReduce - Fully managed Hadoop services on AWS.
+	Azure - HDInsight
+	GCP - Google DataProc
+	Cloudera (Hortonworks)
+	
+Services Provided by CSPs:
+	Compute
+		VMs
+		Resources: CPU, RAM, HDD
+		Network (security, firewall, VPN etc.)
+		Storage
+		Database
+	
+Cloud Types:
+	Public cloud
+		Shared resources
+		
+	Private cloud
+		Only for you
+	Hybrid cloud
+		mix: some VMs on cloud. some VMs / physical servers on-premise.
+		Web application / APIs on the cloud.
+		Data (database) on-premise.
+
+AWS Services:
+	Amazon EC2 - Elastic Compute Cloud - VMs 
+	Amazon S3 - Simple Storage Service - like HDFS (distributed file system)
+	Amazon DynamoDB - NoSQL
+	Amazon RDS - RDBMS - MySQL, PostgreSQL, Oracle, SQL Server
+	Amazon VPC - Virtual Private Cloud
+	Security - IAM - Identity and Access Management
+	IoT
+	Media Services
+	Amazon EBS - Elastic Block Storage
+	
+	
+S3 replication methods:
+You can replicate objects between different Regions or within the same Region. 
+With S3 Cross-Region replication (CRR), you can copy objects across Amazon S3 buckets in different Regions. 
+Using S3 Same-Region replication (SRR), you are able to copy objects across Amazon S3 buckets in the same AWS Region.
+
+Instance Types:
+	On-demand instance: 
+		Procure when you need them.
+		Use it for a specific time period / requirement.
+		Once done, shut / terminate it.
+		Pay for what you use (on hourly basis).
+	Spot instance: 
+		AWS has free capacity.
+		Give it away at heavy discounts.
+		~90% cheaper compared to on-demand.
+		AWS will take it back whenever it wants at a 2-minute notice.
+		Use it wisely.
+		Use it only when your application is not very critical and budget is low.
+	Reserved instance: 
+		Commit upfront you will use this resource, usually for a long time.
+		AWS gives discounts, compared to on-demand.
+		
+HDFS vs S3:
+S3 is a disbtributed managed file system provided by AWS.
+Very similar to HDFS - distributed, fault-tolerance etc.
+So, why S3 and not HDFS?:
+You don't have to worry about managing it.
+	Create a Hadoop cluster with 4 machines - RAM, CPU, HDD
+	Store a 2GB file on HDFS
+	Run a Spark job that:
+		reads the file from HDFS
+		Processes it
+		Writes the result back to HDFS
+	After the job is completed, I terminate the cluster.
+		To save cost.
+	But.....what happens to the data / files on HDFS? ALL GONE!!!!
+	Solution:
+		1. DO NOT TERMINATE the cluster! But what about cost???
+		2. Use S3!
+			Keep the source file on S3.
+			Copy it to HDFS (on the cluster)
+			run the spark job
+			store the output of the job to S3
+			terminate the cluster.
+			S3 is de-coupled from the cluster. Just pay for the storage and not the VMs (of the cluster).
+	
+AWS EMR Cluster
+	VMs (EC2)
+S3
+
+AWS EMR:
+Nodes:
+	Master:
+		Manages the cluster.
+		Single EC2 instance.
+	Core:
+		Each cluster can have 1 or more core nodes.
+		Hosts HDFS data and is also capable of running tasks (both storage and compute).
+	Task:
+		Can only run tasks (only compute).
+		Cannot host any data.
+	If the application is compute-heavy, then you can opt for more task nodes to adds more computing power to the cluster.
+		Preferably, go for Spot Instances for task nodes.
+		So even if one node it taken away, you are not losing any data.
+		
+Cluster Types:
+Transient:
+	auto-terminates when all the steps are done.
+Long-running:
+	Keeps running even after all the steps are done.
+	Have to manually terminate the cluster.
+	
+
+How to create an EMR Cluster:
+Create S3 bucket and a folder in that bucket
+Copy any required files in the S3 bucket-folder
+Create an AWS EC2 key pair
+	if you created a .pem file, convert to .ppk (for PuTTY) using PuTTYGen
+Create the cluster
+	When you create the cluster, status is "Starting".
+	Once it is ready, status is "Waiting...".
+	After terminating, status is "Terminated".
+	Create an inbound rule for ssh 22 your-ip-address.
+Run the spark job using spark-submit
+	copy the jar file from s3 to on the master node.
+		aws s3 cp s3://bucketname/foldername/jar-file-name .
+	copy from local (personal PC, no the EMR Cluster) to master node:
+		scp -i <path to .pem file> <source file> <username@dns:path/>
+		scp -i .\ajs-keypair.pem .\wordcount.scala hadoop@ec2-3-7-250-77.ap-south-1.compute.amazonaws.com:/home/hadoop
+	spark-submit <jar file> --class example.WordCount
+Connect to the master node using ssh:
+	ssh -i <path to .pem file> <username@dns:path/>
+	ssh -i .\ajs-keypair.pem hadoop@ec2-3-7-250-77.ap-south-1.compute.amazonaws.com
+
+Pricing example:
+https://aws.amazon.com/emr/pricing/
+Pricing based on US-East-1 pricing.
+Suppose you run an Amazon EMR application deployed on Amazon EC2, and that you use one c4.2xlarge EC2 instance as your master node and two c4.2xlarge EC2 instances as core nodes. You will be charged for both EMR and for the EC2 nodes. If you run for one month, with 100% utilization during that month, and use on-demand pricing for EC2, your charges will be:
+Master node:
+EMR charges = 1 instance x 0.105 USD hourly x (100 / 100 utilized/month) x 730 hours in a month = 76.65 USD (EMR master node cost)
+EC2 charges = 1 instance x 0.398 USD hourly x 730 hours in a month = 290.54 USD (EC2 master node cost)
+
+Core nodes:
+EMR charges = 2 instance x 0.105 USD hourly x (100 / 100 utilized/month) x 730 hours in a month = 153.30 USD (EMR core node cost)
+EC2 charges = 2 instance x 0.398 USD hourly x 730 hours in a month = 581.08 USD (EC2 core node cost)
+Total charges = 76.65 USD + 290.54 USD + 153.30 USD + 581.08 USD = 1101.57 USD
+
+Spark Driver and Executor:
+Driver Program: 
+	SparkContext. 
+	A java process.
+	Like the main() method of a Scala or Java or Python program.
+	It executes code that is submitted by user,
+		creates a sparksession, sparkcontext.
+	SparkSession is responsible for creating RDDs, DataSets, DataFrames, execute SQL, perform Transformations, Actions etc.
+	Determines the Tasks to be excuted:
+		by determining the Lineage of the RDDs.
+	Helps to create the Lineage, Logical and Physical plan of how to execute the code.
+	Once Physical plan is generated, Driver schedules the execution of the tasks by co-ordincating with Cluster Manager (YARN).
+	Co-ordinates with all the Executors (on the worker nodes) to execute the tasks.
+	Monitors the data and metadata - anything that was cached, persisted (broadcast variables, accumulators) - in the Executor's memory.
+Executor:
+	Resides on the Worker Nodes.
+	Is launched at the start of a Spark application in co-ordination with the Cluster Manager.
+	Runs individual tasks on the worker node and returns the result to the Driver.
+	It can cache the data in the worker node.
+Cluster Manager:
+	Either of:
+		YARN
+		Mesos
+		Kubernetes
+		Spark Standalone Mode
+	controls the resources on the cluster.
+	controls the number of resources that are allocated to an application.
+		the no. of executors
+		CPU
+		RAM
+
+Configure no. of executors:
+	spark.conf.set("spark.executors.instances", 4)
+	spark.conf.set("spark.executors.cores", 2)
+	
+	spark-sumbit --package ...
+		-- class ...
+		--deploy-mode client / cluster
+		--num-exeuctors 4
+		--executor-cores 2
+		--executor-memory 4gb
+		--driver-mermory 8g
+		
+	spark-defaults.conf file:
+		spark.executors.cores 4
+		spark.executors.instances 2
+		
+Sparck Caching:
+	RDD Persistence
+	rdd.cache()
+		Uses the default storage level, MEMORY_ONLY.
+	rdd.persist()
+		you can use various storage levels (persistence types):
+			MEMORY_ONLY: 
+				RDD stored in-memory (in the JVM).
+				as deserialized java objects.
+				what if RDD size > memory available?
+					it will not cache some partitions and recompute them next time whenever needed.
+				the space used for storage is very high, CPU computation itme is low, the data is stored in memory.
+				It does not make use of the disk.
+			MEMORY_AND_DISK:
+				RDD stored as deserialized java objects.
+				What if RDD size is > memory available?
+					it stores the excess partitions on disk, an it will retrieve from disk whenever required.
+					the space used for storage is high, CPU computation time is medium.
+					Makes use of both, memory and disk storage.
+			MEMORY_ONLY_SER:
+				RDD stored as serialized java objects, in memory (in the JVM).
+				It is more space efficient compared to deserialized objects.
+				It increases the overhead on the CPU.
+				storage space is low, CPU computation time is high.
+				data is stored in-memory.
+				does not make use of the disk.
+			MEMORY_AND_DISK_SER:
+				RDD stored as serialized java objects.
+				It is more space efficient compared to deserialized objects.
+				It increases the overhead on the CPU.
+				storage space is low, CPU computation time is high.
+				uses both memory and disk.
+			DISK_ONLY:
+				RDD is stored on disk only.
+				space used is low, CPU computation time high.
+				makes use of disk.
+
+Spark History Server WebUI:
+	Port 18080.
+	Create an inbound rule:
+		Custom
+		TCP Port
+		18080
+		
+
+Cloud Core Service Types:			
+IaaS: Infrastructure as a Service.
+PaaS: Platform as a Service.
+SaaS: Software as a Service.
+
+Examples:
+IaaS: DigitalOcean, Linode, Rackspace, Amazon Web Services (AWS), Cisco Metapod, Microsoft Azure, Google Compute Engine (GCE)
+PaaS: AWS Elastic Beanstalk, Windows Azure, Heroku, Force.com, Google App Engine, Apache Stratos, OpenShift, AWS EMR
+SaaS: Google Workspace, Dropbox, Salesforce, Cisco WebEx, Concur, GoToMeeting
+
+It is possible to reassign a new key to an EC2 instances after it is created? No
+What is Elasticity in computing? Dynamically (de)allocate capacity on an existing resource.
+It is possible to launch an EMR cluster using micro size instances? No.
+It is possible to launch a cluster of just Worker Nodes in EMR? no.
+
