@@ -1,0 +1,29 @@
+P2: Spark Project - Hotel Booking Analysis
+Creating Spark jobs to perform various analysis on a Hotel Booking dataset stored in HDFS in csv/json format.
+
+P2: Spark Project - Company Registrations Analysis
+Creating Spark jobs to perform various analysis on a Company Registrations dataset stored in HDFS in csv/json format.
+
+P2: Spark Project - Olympics Analysis
+Creating Spark jobs to perform various analysis on a Olympics dataset stored in HDFS in csv/json format.
+
+P2: Spark Project - Airline Analysis
+Creating Spark jobs to perform various analysis on a Airline dataset stored in HDFS in csv/json format.
+
+Spark SQL / Spark DataFrames (DF) / DataSets
+Read/Write JSON/CSV using SparkSQL
+Specify custom schema to the DF
+Read and Write files in Parquet format
+SparkSQL with Hive
+
+NO LIVE STREAMING OF THE DATA!!!!
+You get the data.
+Store it in HDFS.
+Then run SparkSQL queries on that data.
+ALL OF THIS USING SCALA CODE!!!
+Presentation next Friday, 19th Nov '21.
+
+Group Project.
+1x github repo per group.
+1x Jira project per group.
+1x presentation per group.
