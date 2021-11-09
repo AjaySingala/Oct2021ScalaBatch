@@ -1,0 +1,96 @@
+SparkSQL.
+DataFrames (DF)/ DataSets.
+Read / Write JSON / CSV using SparkSQL / DF.
+Parquet file format.
+
+SparkContext
+SparkSession
+SQLContext
+HiveContext
+
+SparkSession:
+- Entry point into all the functionalities in Spark - The sparkSession class.
+- spark-shell, it by default gives a SparkSession object named "spark".
+
+In code:
+val spark: SparkSession = SparkSession
+      .builder()
+      .master("local[3]")
+	  .config("some.config.option", "value")
+      .appName("whatever name you want to give")
+      .getOrCreate()
+	  
+Once you have a SparkSession object, you can create a DataFrame:
+val df = spark.read.json("/home/maria_dev/data/people.json")
+
+SparkContext:
+- The driver program that connects and communicates with the cluster.
+- Helps in executing and coordinating Spark jobs with the resource manager (YARN or Mesos).
+- Using SparkContext, you can get access to SQLContext and HiveContext.
+- Set configuration parameters for the Spark Job.
+- spark-shell, it by default gives a SparkContext object named "sc".
+- When using spark-submit, you have to create an instance in code.
+Creating a SparkContext in code:
+#1:
+    val spark: SparkSession = SparkSession
+      .builder()
+      .master("local[3]")
+      .appName("AjaySingala")
+      .getOrCreate()
+    spark.sparkContext.setLogLevel("ERROR")
+    val sc = spark.sparkContext
+	
+#2:
+val sparkConf = new SparkConf().setAppName("some app name").setMaster("local[3]")
+val sc = new SparkContext(sparkConf)
+
+SQLContext:
+- This is your gateway to SparkSQL.
+- Basically, using SQL syntax to run queries / analysis in Spark.
+
+val sqlContext = new org.apache.spark.sql.SQLContext(sc)
+
+- Once you have a SQLContext, you can start working with DataFrames and DataSets.
+
+HiveContext:
+- This your gateway to Hive.
+- Has all the functionality from SQLContext.
+- The API documentation it extends SQLContext.
+val hiveContext = new org.apache.spark.sql.hive.HiveContext(sc)
+
+Spark DataSets, DataFrames and SparkSQL:
+------------------------------
+In Python, PySpark.
+
+Datasets:
+---------
+A distributed collection of data.
+A new interface added in Spark 1.6, which provides benefits of RDDs + ability to use SparkSQL optimized engine for queries.
+You can perform map, flatMap, filters etc. - functional transformations.
+The DataSet API is available ONLY for Scala and Java, but not for Python (or R)!
+Spark Datasets are strongly typed structures that represent the structured queries (to be executed).
+	- They provide type-safety to the data and also give an Object Oriented programming interface.
+Have lazy query expression.
+	- query evaluated when triggering an action.
+Dataset is a combination of RDD and DF.
+Aggregation is faster than RDD, but slower than DF.
+
+Dataframe (DF):
+----------
+Is a DataSet organized into named columns.
+It is conceptually equivalent to a RDBMS table, but has richer otpimizations internally in SparkSQL.
+DF can be created a variety of data sources: structured data files, tables in Hive, external DB or existing RDDs.
+DF API is available in Scala, Java, Python, R.
+In Scala and Java, a DF is represented by a Dataset of rows:
+	In Scala, DF ==> Dataset[Row]
+	In Java, DF ==> Dataset<Row>
+Support different data formats like CSV, JSON, Avro, Parquet etc.
+Support different storage systems like HDFS, MySQL, Cassandra etc.
+Makes use of SparkSQL Catalyst Optimiser for optimizing the queries.
+Aggregations is faster than Dataset - due to powerful APIs (easy toi use).
+
+Global Temporary View (GTV):
+In SparkSQL, Temporary Views are session-scoped. They will disappear if the session that created it is terminated.
+If you want to have a temp view that is shared among sessions, will be alive until the Spark Application terminates, create a Global Temporary View.
+GTV is tied to system preserved database "global_temp".
+To access it, use the fully qualified name: SELECT * FROM global_temp.people
