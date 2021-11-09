@@ -1,8 +1,8 @@
 ### Project 2
 This is a template, to be filled out by each group and placed in their git repo titled README.md
 Requirements:
-- Create a Spark Application that processes Twitter data (Twitter preferred. If not Twitter, then other source). 
-- Your project 2 pitch should involve some analysis of the data.  This can be the central feature.  Your final application should work, to some extent and historical data.
+- Create a Spark Application that processes data (huge data) (you can either get the dataset from a reliable source or get it from an API).
+- Your project 2 pitch should involve some analysis of the data.  This can be the central feature.  Your final application should work, to some extent and historical data.	
 - Produce a one or more .jar files for your analysis.  Multiple smaller jar files are preferred.
 
 ### Presentations
