@@ -54,7 +54,7 @@ object GetUrlContent extends App {
     //val  post = new HttpPost(url);
     val get = new HttpGet(url)
     get.setHeader("Content-Type", "application/json")
-    get.setHeader("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAI5yVgEAAAAAFbfoVy5EOml3AXFiozAYr6AWuKs%3Dnba4SwXfi4wb2mVwPw6FGSDbjuyWmxEtxrL3psCsbMspY5usJ1");
+    get.setHeader("Authorization", "Bearer yourTwitterBearerToken");
     val httpResponse = httpClient.execute(get)
     val entity = httpResponse.getEntity()
     var content = ""
