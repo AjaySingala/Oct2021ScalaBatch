@@ -195,4 +195,26 @@ To extend functions of the framework and then reuse this function with many DFs.
 
 Read/Write JSON, CSV files.
 Read/Write Parquet format files.
+Parquet format:
+---------------
+Apache Parquet is a columnar file format that provides optimzations to speed up queries on the data.
+It is considered to be more efficient than plain CSV or JSON format.
+SparkSQL provides support for both reading and writing parquet files that automatically capture the schema of the data.
+It reduces the storage size by ~75%.
+Advantages:
+	Reduces IO operations.
+	Consumes less space.
+	fetch specific columns that you need to access.
+
 Partitioning / Bucketing.
+repartition()
+coalesce()
+rdd.getNumPartitions()
+df.rdd.getNumPartitions()
+df.rdd.repartition(n)
+df.rdd.coalesce(n)
+
+On a Cluster:
+spark.sql.shuffle.partitions	200
+used by ops like union(), join(), groupBy() (Shuffle ops)
+
