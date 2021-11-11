@@ -62,7 +62,10 @@ Spark DataSets, DataFrames and SparkSQL:
 ------------------------------
 In Python, PySpark.
 
-Datasets:
+RDDs (2011):
+------------
+
+Datasets (2015):
 ---------
 A distributed collection of data.
 A new interface added in Spark 1.6, which provides benefits of RDDs + ability to use SparkSQL optimized engine for queries.
@@ -70,14 +73,17 @@ You can perform map, flatMap, filters etc. - functional transformations.
 The DataSet API is available ONLY for Scala and Java, but not for Python (or R)!
 Spark Datasets are strongly typed structures that represent the structured queries (to be executed).
 	- They provide type-safety to the data and also give an Object Oriented programming interface.
+	- Type safety means the compiler will validate the data types of all the columns in the dataset while compilation only and will throw an error if there is any mismatch in the data types.
 Have lazy query expression.
 	- query evaluated when triggering an action.
 Dataset is a combination of RDD and DF.
 Aggregation is faster than RDD, but slower than DF.
+Makes use of SparkSQL Catalyst Optimiser for optimizing the queries.
 
-Dataframe (DF):
+Dataframe (DF) (2013):
 ----------
 Is a DataSet organized into named columns.
+First introduced in Spark ver 1.3.
 It is conceptually equivalent to a RDBMS table, but has richer otpimizations internally in SparkSQL.
 DF can be created a variety of data sources: structured data files, tables in Hive, external DB or existing RDDs.
 DF API is available in Scala, Java, Python, R.
@@ -94,3 +100,99 @@ In SparkSQL, Temporary Views are session-scoped. They will disappear if the sess
 If you want to have a temp view that is shared among sessions, will be alive until the Spark Application terminates, create a Global Temporary View.
 GTV is tied to system preserved database "global_temp".
 To access it, use the fully qualified name: SELECT * FROM global_temp.people
+
+Ways to create a RDD:
+rdd.toDF()
+rdd.toDF(columns...)
+createDataframe(RDD)
+createDataframe(RDD[Row])
+
+show():
+def show()
+def show(numRows: scala.Int)
+def show(trunctate: scala.Boolean)		// default: true.
+def show(numRows: scala.Int, trunctate: scala.Boolean)
+def show(numRows: scala.Int, trunctate: scala.Int)
+def show(numRows: scala.Int, trunctate: scala.Int, vertical: scala.Boolean)	// Default: false.
+
+StructType and StructField:
+Classes used to programmatically specify the schema for a DF.
+Create complex schema / structure / columns: nested struct, array, map.
+StructType is a collection of StructFields.
+Define StructType within a StructType.
+For a StructField, you can define the name of column, data type of the column, isNullable (Boolean, default = true).
+StructType defines the structure of the DF.
+	spark.sql.types.StructType
+StructField defines the metadata of the column(s) in the DF.
+	spark.sql.types.StructField
+Check if a field exists in a DF:
+	df.schema.fieldNames.contains("gender")
+	df.schema.contains(StructField("gender", StringType, true))
+
+Selecting columns from a DF:
+use the select() function to select one or multiple columns from a DF.
+Similar to "SELECT * FROM table" or "SELECT Firstname, Lastname FROM table".
+
+collect():
+action operation used to retrieve all the elements from RDD / DF / DS from all the nodes and return them back to the driver node.
+Use it diligently!!! on smaller datasets, usually after filter(), group(), count() etc.
+Retrieving a large dataset results in out of memory.
+
+withColumn():
+Used to 
+	- add a new column to DF
+	- change the value of an existing column
+	- convert the datatype of column
+	- derive a new column from an existing column.
+drop():
+Used to drop a column from a DF/DS.
+Can remove multiple multiple columns or a single column.
+
+where() & filter():
+Functions used to filter rows from DF/DS based on one or more conditions.
+
+sort() & orderby():
+Functions used to sort the data in the DF/DS by ascending or descending order, based on a single column or multiple columns.
+
+groupBy():
+Function used to collect identical data from a DF/DS into groups and then perform aggregation on the resulting grouped data.
+
+join():
+DFs support all basic  SQL join types: INNER, LEFT, RIGHT...
+SparkSQL joins are wider transformations. Results in data shuffling over the network across partitions, hence they have an impact on performance, especially when not designed with care.
+SparkSQL Catalyst Optimiser, joins do tend to perform quite well.
+
+	self-join:
+		When you want to join data (Pk-FK) that resides in the same table and not in separate tables.
+		Example: Emp table, Columns: Id   Name   ManagerId
+		Query:
+			SELECT e1.Id, e1.name, e2.Id as 'ManagerId, e2.Name as 'Manager'
+			FROM Emp as e1
+			INNER JOIN EMP as e2 ON e1.manager_id = e2.Id
+
+distinct() & dropDuplicates():
+Removes / drop duplicate rows from a DF/DS.
+distinct() can be used to remove rows that have the same values on all columns.
+dropDuplicates() can be used to removes rows that have the same values on multiple selected columns.
+
+map() & flatMap():
+map() transformation that applies a function to each row in a DF/DS and returns a new transformed DS.
+flatMap() flattens the DF/DS after applying the function on every element and returns a new transformed DS. 
+	The retrurned DS will return more rows than the original DF.
+	a.k.a. one-to-many transformation.
+both return a DS (DF = Dataset[Row]).
+both are narrow transformations, i.e.; they do not result in Data Shuffle.
+flatMap() results in redundant data for some columns.
+map() will always return the same size /records as in the input DF/DS, whereas flatMap() returns many records for each record (one-to-many).
+
+union() & unionAll():
+union() used to combine two DFs that have the same structure / schema. If schemas are not same, it gives an error.
+unionAll(): deprecated since 2.0.0.
+
+UDF:
+User Defined Functions.
+To extend functions of the framework and then reuse this function with many DFs.
+
+Read/Write JSON, CSV files.
+Read/Write Parquet format files.
+Partitioning / Bucketing.
