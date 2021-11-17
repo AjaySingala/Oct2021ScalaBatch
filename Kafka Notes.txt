@@ -247,5 +247,41 @@ lazy val root = (project in file("."))
 3. Producer Scala code:
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 ./producer.jar --class example.KafkaProducerApp
 
-4. Cosnumer Scala code:
+4. Consumer Scala code:
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 ./consumer.jar --class example.KafkaConsumerSubscribeApp
+
+
+Spark Streaming (SS):
+----------------
+Spark Streaming is an extension of the Core Spark API, which enables scalable, high-throughput, fault-tolerant stream processing of live data steams.
+Data can be ingested from many sources like Kafka, TCP sockets, files, DBs etc., which can be processed (map, reduce, join etc.).
+Once processed, the data can be pushed to filesystems (HDFS, S3 etc.), Kafka topics, DBs, console, sent to an API etc.
+Can also apply ML or Graph processing algorithms on the data streams.
+SS receives live input data streams and divides the data into batches, which are then processed by the spark Engine (SE) to generate the final stream of resuls in batches.
+SS provides a high-level abstraction called DStream (Discretized Stream), which basically represents a continuous stream of data.
+DStream can be created either from input data streams from sources like Kafka, S3, HDFS etc. or by applying operations on other DStreams.
+Internally, a DStream is represented as a sequence of RDDs.
+
+Points to remember:
+- Once a contexts has been started, no new streaming computation can be added to it.
+- once a contexts has been stopped, it cdannot be restarted.
+- Only one StreamingContext can be active in a JVM at the same time.
+- stop() on StreamingContext, it also stops the SparkContext. To stop only the StreamingContext, set the optional parameter of stop() called stopSparkContext to false. stop(stopSparkContext = false)
+- A SparkContext can be reused to create multiple StreamingContexts, as long as the previous StreamingContext is stopped (without stopping the SparkContext) before the next StreamingContext is created.
+
+
+Spark Structureed Streaming:
+----------------------------
+Fully supports SparkSQL!!!
+AFter processing the streaming data, Spark needs to store it somewhere. Spark uses some "output modes" to store the streaming data.
+Output modes are:
+	Append mode: Spark will output ony newly processed rows since the last trigger.
+	Update mode: Spark will output only updated rows since the last trigger. If we are not using aggregation on streaming data, then it will behave like append mode.
+	Complete mode: Spark will output all the rows it has processed so far.
+	
+Input sources:
+Rate (for testing): automatically generates data including 2 columns (timestamp and value).
+Socket (for testing): This data source listens to the specified socket and ingest any data into SparkStreaming.
+File: This source will listen to a particular directory as streaming data. Supports formats like CSV, JSON, Parquet etc.
+Kafka: This source will read data from a Kafka Topic.
+ 

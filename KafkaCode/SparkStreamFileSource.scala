@@ -105,12 +105,11 @@ object SparkStreamFileSource {
     //   .start()
     //   .awaitTermination()
 
-    val resultDf = initDF.select("Name", "Date", "Open", "Close")
-    
     // // Output to file sink: CSV.
     // // File sink only supports append output mode.
     // // Delete the folder first.
     // println("Output to csv...")
+    // val resultDf = initDF.select("Name", "Date", "Open", "Close")
     // resultDf
     //   .writeStream
     //   .outputMode("append") // Filesink only support Append mode.
@@ -134,23 +133,50 @@ object SparkStreamFileSource {
     //   .awaitTermination()
     //
     // Output to Kafka sink.
-    // $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic testConsumer
-    println("Output to Kafka Topic 'testConsumer'...")
-    resultDf
+    // $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic testConsumer1
+    println("Output to Kafka Topic 'testConsumer1'...")
+    val resultDf = initDF.withColumn("value", 
+        concat_ws("|",col("Name"),col("Date"),col("High"),col("Low"),col("Open"),col("Close"))
+      )
+      //.withColumn("key", col("Name"))
+      // .drop("Name")
+      // .drop("Date")
+      // .drop("high")
+      // .drop("Low")
+      // .drop("Open")
+      // .drop("Close")
+      // .drop("Volume")
+    resultDf.printSchema()
+    //
+    // println("Output to console...")
+    // resultDf.selectExpr("CAST(Name AS STRING) AS key", "CAST(value AS STRING) AS value")
+    //   .writeStream
+    //   .outputMode("update") 
+    //   .option("truncate", false)
+    //   .option("numRows", 3)
+    //   .format("console")
+    //   .start()
+    //   .awaitTermination()
+    //
+    resultDf.selectExpr("CAST(Name AS STRING) AS key", "CAST(value AS STRING) AS value")
       .writeStream
       .format("kafka")
+      .outputMode("append")
       //.option("kafka.bootstrap.servers", "localhost:9092")
       .option("kafka.bootstrap.servers", "sandbox-hdp.hortonworks.com:6667")
-      .option("topic", "testConsumer")
+      .option("topic", "testConsumer1")
       .option("checkpointLocation", "file:///home/maria_dev/output/checkpoint/filesink_checkpoint")
       .start()
       .awaitTermination()
+
     //
     // // Output to foreachBatch sink.
     // // Does not work on Hortonworks VM. works with Spark 2.4.0+
+    // println("Output to foreachBatch sink...")
+    // val resultDf = initDF.select("Name", "Date", "open")
     // def saveToMySql = (df: Dataset[Row], batchId: Long) => {
     //   val url = """jdbc:mysql://localhost:3306/training"""
-        
+    //    
     //   df
     //       .withColumn("batchId", lit(batchId))
     //       .write.format("jdbc")
@@ -170,28 +196,30 @@ object SparkStreamFileSource {
     //   .start()
     //   .awaitTermination()
     
-  //   // Outpit sink - foreach.
-  //   import org.apache.spark.sql.ForeachWriter
-  //   val customWriter = new ForeachWriter[Row] {
-      
-  //     override def open(partitionId: Long, version: Long) = true
+    // // Outpit sink - foreach.
+    // import org.apache.spark.sql.ForeachWriter
+    // println("Output to foreach sink...")
+    // val resultDf = initDF.select("Name", "Date", "open")
+    // val customWriter = new ForeachWriter[Row] {
+    
+    //   override def open(partitionId: Long, version: Long) = true
 
-  //     override def process(value: Row) = {
-  //       println("Name : "  + value.getAs("Name"))
-  //       println("Open : "  + value.getAs("Open"))
-  //       println("Size : " + value.size)
-  //       println("Values as Seq : " + value.toSeq)
-  //     }
-      
-  //     override def close(errorOrNull: Throwable) = {}
-  //   }
-
-  //   // Use the ForeachWriter instance defined above to write data using the foreach sink.
-  //   initDF
-  //     .writeStream
-  //     .outputMode("append")
-  //     .foreach(customWriter)
-  //     .start()
-  //     .awaitTermination()
+    //   override def process(value: Row) = {
+    //     println("Name : "  + value.getAs("Name"))
+    //     println("Open : "  + value.getAs("Open"))
+    //     println("Size : " + value.size)
+    //     println("Values as Seq : " + value.toSeq)
+    //   }
+    
+    //   override def close(errorOrNull: Throwable) = {}
+    // }
+    //
+    // // Use the ForeachWriter instance defined above to write data using the foreach sink.
+    // initDF
+    //   .writeStream
+    //   .outputMode("append")
+    //   .foreach(customWriter)
+    //   .start()
+    //   .awaitTermination()
   }
 }
