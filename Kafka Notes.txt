@@ -1,0 +1,251 @@
+Kafka / Streaming:
+
+Streaming:
+----------
+It means listening to music, watching movies etc. in "real time", intead of downloading a file to your Pc and then watching it later.
+"Buffering".
+
+Event Streaming (ES):
+----------------
+Not referring to "events" like concerts, Apple event, Microsoft Ignite event etc.
+Event Streaming is The practice of capturing data in real-time from event sources like databases, mobile devices, sensors, cloud services, applications etc.
+	The data comes in the form of a "stream of events".
+		IoT : Internet of Things.
+	Store these event streams durably somewhere (in a DB, queue, file etc.) for later retrieval.
+	Can be manipulated, processed further.
+	Apps can react to the events streams in real-time as well as retrospectively (later).
+	Route the event streams to different destinations as needed.
+ES ensures a continuous flow of data and also a continuous interpretation of the data
+	so that the right information is at the right place at the right time.
+	
+Uses of ES:
+	To process financial / payment transactions in real-time, like stock exchanges, banks, insurance.
+	To track and monitor vehicles (cabs, trucks, cars, fleets, shipments) in real-time, like logistics, self-drive cars etc.
+	To continuously capture and analyze sensor data from IoT devices or any such equipments, for e.g.; in factories, power generation units etc.
+	To collect and immediately react to customer interactions / orders, for e.g.; retail, hotel & travel industry etc.
+	To monitor patients in health care industry, even predict changes in condition to ensure timely treatment in case of emergencies.
+	
+How does Kafka fit into this?
+KAFKA: Is an event streaming platform.
+	Write (publish) and read (subscribe) to streams of events, including continuous import/export of data from other systems.
+	Store streams of events durably and reliably for as long as you want.
+	Process the stream of events as they occur or retrospectively (later).
+	
+	All of this functionality is provided in a distributed, highly scalable, fault-tolerant, elastic and secure manner.
+	Can be deployed on bare-metal hardware VMs, containers, on-premise, on-cloud.
+	There are options of fully-managed Kafka service by different vendors.
+	
+An event records the fact that something happened somewhere (in the world, business, web site etc.).
+It is called a "message".
+An application / device / event source will send a "message" to the event streaming platform - Kafka.
+Example of a event:
+	has a key
+	has a value
+	has a timestamp
+	may have optional metadata (headers).
+	
+	Event key: "Ajay"
+	Event value: "Made a payment of $1500 to John"
+	Event timestamp: "Nov 15, 2021 at 2:00 pm"
+	
+Producers: Are client applications that write (publish) events to Kafka.
+Consumers: Are client applicaitons that read (subscribe to) and process these events.
+In Kafka, these Producers and Consumers are fully decoupled and agnostic of each other.
+Consumer can read the event, process it and then either:
+	save it to a DB
+	save it to a file
+	send it to another Kafka storage
+	send it to an API
+	display on the console
+
+These Events (messages) that come in to Kafka, are stored (organized and durably stored) in "TOPICS".
+A topic is similar to a file-folder on a filesystem.
+Events are files that are stored in this folder.
+There can be multiple producers and consumers for a Topic.
+A producer may publish to multiple topics.
+A consumer may subscribe to multiple topics.
+A topic may not have any subscriber or producer.
+
+Events in a topic can be read as many times and as often as needed.
+This is unlike some traditional messaging systems where once a message is read, it is deleted after consumption.
+	For e.g.; A QUEUE!
+	
+Types of Messaging Systems:
+Point-to-Point:
+	Producer sends message into the queue.
+	Each message is read by only one consumer.
+	Once the message is consumed, it vanishes from the queue.
+	Mutliple consumers reading messages from the queue.
+		But 2 (or more) consumers cannot read the same message.
+Publish-Subscribe:
+	Message producers are called Publishers.
+	Message consumers are called Subscribers.
+	
+	Publisher sends messages into 1 or more topics.
+	Subscribers can receive messages from 1 or more topics and consume them.
+	
+Topics are partitioned, meaning a topic is spread across multiple "buckets" located on different "kafka brokers" on the cluster.
+Distributed brokers bring scalaiblity, fault-tolerance to Kafka.
+Allows clients to read/write from/.to multiple brokers at the same time.
+When a new event is published to a topic, it is actually appended to one of topic's partitions.
+Events with the same event key (for e.g.; vehicle ID) are written to the same partition.
+Kafka guarantees that any consumer (subscriber) of a given topic-partition will always read the events in the same order as they were written.
+
+Kafka APIs:
+	Admin API: manage, inspect, configure Topics, brokers, other Kafka objects.
+	Producer API: to publish (write) a stream of events to one or more topics.
+	Consumer API: to subscribe (read) sttream of events from one or more topics and process them.
+	Kafka Streams API: to implement stream processing applications with microservices.
+						operations like aggregations, joins etc.
+	Kafka Connect API: to build and run reusable data import/export connectors that read / write streams of events from/to external systems / applications.
+	
+Apache Kafka is aon open-source distributed event streaming platform.
+Originally developed at LinkedIn.
+The main goal was to create a unified platform that is distributed, scalable for handling real-time data streams.
+
+Core Capabilities:
+High throughput: deliver messages at a very fast rate even over low latency.
+Scalable: Scale production clusters to up to a 1k brokers, trillions of messages per day, petabytes of data, hundreds/thousands of partitions.
+Permanent Storage: Store streams of data safely in a distributed manner, on a fault-tolerant cluster.
+High Availabity: Connect spearate clusters across geographic regions.
+
+Ecosystem:
+Built-in streaming capabilities: process streams with joins, aggregations, filters, transformations etc.
+Connect to almost anything: Out-of-the-box connectors for practically anything, integrates with hundreds/thousands of event sources, like PostgreSQL, MySQL, ElasticSearch, AWS S3 etc.
+Client libraries: read, write and process event streams in various programming languages.
+Large ecosystem of open source tools: community driven.
+
+Design goals of Kafka:
+Scalability
+High volume
+Low latency
+Data transformations
+fault tolerance
+reliability - distributed, paritioned, replicated, fault-tolerant
+durability - remains on disk even after processed (as long as you need)
+Performance
+
+Kafka Architecture:
+KAfka topics are divided into partitions.
+These topics are replicated across machines (using brokers0.
+Consumers can read from a topic in parallel.
+Each of these brokers has paritions, that are "leaders" and "replicas".
+	This gives Kafka good amount of fault-tolerance.
+	When the system is working fine, all reads / writes to a topic go thru the leader.
+	The leader makes sure that all the other brokers are updated properly.
+	If a broker fails, the system can automatically reconfigure itself so that a replica can take over as the new leader for that topic.
+	
+Role of Zookeeper (ZK):
+used to automatically select a leader for a partition.
+In case a broker shuts down, the ZK runs an election (kind of), to select the leader position of partitions.
+Also has the metadata, like in which broker does the leader reside.
+Default port for ZK is 2181.
+Default port for Kafka server is 9092. (On the Hortonworks VM, it is 6667)
+
+Role of the Broker:
+It is an instance of Kafka that communicates with ZK.
+Each broker hold partition(s) of topics.
+Some of those paritions on the broker are leaders and others are replicas of the leader partitions from other brokers.
+
+Add path to kafka bin folder in environment variable:
+$vi .bashrc
+	export $KAFKA_HOME="usr/hdp/current/kafka-broker"
+	SAVE+QUIT
+$ source .bashrc
+$ echo $KAFKA_HOME
+
+Start Kafka and ZK:
+$KAFKA_HOME/bin/zookeeper-server-start.sh $KAFKA_HOME/config/zookeeper.properties
+$KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/config/server.properties
+
+List all topics:
+$KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper localhost:2181
+Create a topic:
+$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic sampleTopic
+Describe a topic:
+$KAFKA_HOME/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic sampleTopic
+
+Topic:sampleTopic       PartitionCount:1        ReplicationFactor:3     Configs:
+        Topic: sampleTopic      Partition: 0    Leader: 1    Replicas: 1,2,0  Isr: 1,2,0
+		
+ISR ==> In-Sync Replica
+
+Leader:1 = broker 1 is responsible for all reads / writes for the given parition.
+Replicas: 1,2,0 = broker instances 0,1 and 2 are acting as nodes that replicate the log, irrespective of one being a leader.
+Isr: 1,2,0 = broker instances 1,2,0 are in-sync replicas.
+ParitionCount:1 and ReplicationFactor:3 = there is 1 partition and 3 replicas of that partition.
+
+Create a console producer:
+$KAFKA_HOME/bin/kafka-console-producer.sh --broker-list sandbox-hdp.hortonworks.com:6667 --topic sampleTopic
+
+Create a console consumer:
+Open a new terminal and then run this...
+$KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server sandbox-hdp.hortonworks.com:6667 --topic sampleTopic --from-beginning
+
+Certifications:
+https://www.edureka.co/blog/top-big-data-certifications
+https://intellipaat.com/blog/top-10-big-data-certifications/
+
+Using Connectors:
+Using Output Sink: file sink:
+In terminal 1:
+$ cd $KAFKA_HOME/config
+$ cp connect-standalone.properties ~
+$ cp connect-file-sink.properties ~
+$ cp connect-file-source.properties ~
+
+$ cd ~
+$ cat > inputfile.txt
+Hello there!
+Welcome to Kafka.
+Testing this file for File Sink and Source Connector
+^C
+$ cat inputfile.txt
+Then,
+•	In ~/connect-standalone.properties, change the bootstrap-server property value to sandbox-hdp.hortonworks.com:6667
+•	In ~/connect-file-sink.properties, change the file property value to /home/maria_dev/testlog.out.txt
+•	In ~/connect-file-source.properties, change the file property value to /home/maria_dev/inputfile.txt
+•	In ~/connect-file-sink.properties and ~/connect-file-source.properties, change the topics property value to the name of a topic you created and want to use for this demo.
+
+$KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server sandbox-hdp.hortonworks.com:6667 --topic connectTest1
+In terminal 2:
+$KAFKA_HOME/bin/connect-standalone.sh ~/connect-standalone.properties ~/connect-file-source.properties ~/connect-file-sink.properties
+
+In Terminal 3:
+- Check the contents of the file testlog.out.txt
+	$ cat testlog.out.txt
+- Add one-or-two lines to the source file as:
+$ cat >> inputfile.txt
+This line added manually.
+Check if it works.
+^C
+- The new lines should appear in Terminal 1 on the console consumer and in the testlog.out.txt file as well.
+
+Producer and Consumer using Scala:
+---------------------------------
+How to write messages to Kafka Topic (producer) and read messages from a Kafka Topic (consumer) using Scala.
+Producer sends messages to Kafka topics in the form of records.
+	A record is a key-value pair.
+Consumer receives messages from a topic.
+
+1. Create a topic: text_topic.
+$KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic text_topic
+$KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper localhost:2181
+
+2. Add dependencies in build.sbt
+lazy val root = (project in file("."))
+  .settings(
+    name := "kafkaspark",
+    libraryDependencies += scalaTest % Test
+    ,libraryDependencies += "org.apache.spark" %% "spark-core" % "1.2.0"
+    ,libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.1.0"
+    // For kafka.
+    ,libraryDependencies += "org.apache.spark" %% "spark-sql-kafka-0-10" % "2.3.4"
+    ,libraryDependencies += "org.apache.kafka" %% "kafka" % "2.1.0"
+  )
+
+3. Producer Scala code:
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 ./producer.jar --class example.KafkaProducerApp
+
+4. Cosnumer Scala code:
+spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.4 ./consumer.jar --class example.KafkaConsumerSubscribeApp
