@@ -7,7 +7,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer
 import scala.collection.JavaConverters._
 
 object KafkaConsumerSubscribeApp {
-  def main(args: Array[String]): Unit = {
+  def main_kc(args: Array[String]): Unit = {
 
     val props: Properties = new Properties()
     props.put("group.id", "test")

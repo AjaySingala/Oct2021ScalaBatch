@@ -285,3 +285,24 @@ Socket (for testing): This data source listens to the specified socket and inges
 File: This source will listen to a particular directory as streaming data. Supports formats like CSV, JSON, Parquet etc.
 Kafka: This source will read data from a Kafka Topic.
  
+Spark Streaming read from Kafka topic:
+$KAFKA_HOME/bin/kafka-console-producer.sh --broker-list sandbox-hdp.hortonworks.com:6667 --topic json_topic
+$KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server sandbox-hdp.hortonworks.com:6667 --topic json_topic
+$KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server sandbox-hdp.hortonworks.com:6667 --topic json_output_topic
+spark-shell --packages org.apache.spark:spark-sql-kafka-0-10_2.11:2.3.0
+
+{"id":1,"firstname":"James ","middlename":"","lastname":"Smith","dob_year":2018,"dob_month":1,"gender":"M","salary":3000}
+{"id":2,"firstname":"Michael ","middlename":"Rose","lastname":"","dob_year":2010,"dob_month":3,"gender":"M","salary":4000}
+{"id":3,"firstname":"Robert ","middlename":"","lastname":"Williams","dob_year":2010,"dob_month":3,"gender":"M","salary":4000}
+{"id":4,"firstname":"Maria ","middlename":"Anne","lastname":"Jones","dob_year":2005,"dob_month":5,"gender":"F","salary":4000}
+{"id":5,"firstname":"Jen","middlename":"Mary","lastname":"Brown","dob_year":2010,"dob_month":7,"gender":"","salary":-1}
+
+Kafka Topic has data in key-value pairs.
+
+Triggers:
+---------
+3 types of Triggers:
+	Default: Executes a micro-batch as soon as then previous finishes.
+	Fixed inteval micro-batches: Specifies the interval when the micro-batches will execute. For e.g.; 1 minute, 30 seconds or 1 hour etc.
+	One-time micro-batch: Executes only one micro-batch to process all the available data and then stops.
+	

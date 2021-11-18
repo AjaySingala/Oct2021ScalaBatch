@@ -18,7 +18,7 @@ import org.apache.spark.sql.types._
 import org.apache.spark.sql.{Column, Dataset, Row, SparkSession}
 
 object SparkStreamFileSource {
-  def main(args: Array[String]): Unit = {
+  def main_f(args: Array[String]): Unit = {
 
     // Create Spark Session
     // val spark = SparkSession
@@ -94,16 +94,16 @@ object SparkStreamFileSource {
     //   """select year(Date) as Year, Name, max(High) as Max from stockView group by Name, Year"""
     // val stockDf = spark.sql(query)
 
-    // // Output to Console
-    // // Try "update" and "complete" mode.
-    // println("Output to console...")
-    // stockDf.writeStream
-    //   .outputMode("update") 
-    //   .option("truncate", false)
-    //   .option("numRows", 3)
-    //   .format("console")
-    //   .start()
-    //   .awaitTermination()
+    // Output to Console
+    // Try "update" and "complete" mode.
+    println("Output to console...")
+    stockDf.writeStream
+      .outputMode("update") 
+      .option("truncate", false)
+      .option("numRows", 3)
+      .format("console")
+      .start()
+      .awaitTermination()
 
     // // Output to file sink: CSV.
     // // File sink only supports append output mode.
@@ -132,21 +132,21 @@ object SparkStreamFileSource {
     //   .start()
     //   .awaitTermination()
     //
-    // Output to Kafka sink.
-    // $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic testConsumer1
-    println("Output to Kafka Topic 'testConsumer1'...")
-    val resultDf = initDF.withColumn("value", 
-        concat_ws("|",col("Name"),col("Date"),col("High"),col("Low"),col("Open"),col("Close"))
-      )
-      //.withColumn("key", col("Name"))
-      // .drop("Name")
-      // .drop("Date")
-      // .drop("high")
-      // .drop("Low")
-      // .drop("Open")
-      // .drop("Close")
-      // .drop("Volume")
-    resultDf.printSchema()
+    // // Output to Kafka sink.
+    // // $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic testConsumer1
+    // println("Output to Kafka Topic 'testConsumer1'...")
+    // val resultDf = initDF.withColumn("value", 
+    //     concat_ws("|",col("Name"),col("Date"),col("High"),col("Low"),col("Open"),col("Close"))
+    //   )
+    //   //.withColumn("key", col("Name"))
+    //   // .drop("Name")
+    //   // .drop("Date")
+    //   // .drop("high")
+    //   // .drop("Low")
+    //   // .drop("Open")
+    //   // .drop("Close")
+    //   // .drop("Volume")
+    // resultDf.printSchema()
     //
     // println("Output to console...")
     // resultDf.selectExpr("CAST(Name AS STRING) AS key", "CAST(value AS STRING) AS value")
@@ -158,16 +158,16 @@ object SparkStreamFileSource {
     //   .start()
     //   .awaitTermination()
     //
-    resultDf.selectExpr("CAST(Name AS STRING) AS key", "CAST(value AS STRING) AS value")
-      .writeStream
-      .format("kafka")
-      .outputMode("append")
-      //.option("kafka.bootstrap.servers", "localhost:9092")
-      .option("kafka.bootstrap.servers", "sandbox-hdp.hortonworks.com:6667")
-      .option("topic", "testConsumer1")
-      .option("checkpointLocation", "file:///home/maria_dev/output/checkpoint/filesink_checkpoint")
-      .start()
-      .awaitTermination()
+    // resultDf.selectExpr("CAST(Name AS STRING) AS key", "CAST(value AS STRING) AS value")
+    //   .writeStream
+    //   .format("kafka")
+    //   .outputMode("append")
+    //   //.option("kafka.bootstrap.servers", "localhost:9092")
+    //   .option("kafka.bootstrap.servers", "sandbox-hdp.hortonworks.com:6667")
+    //   .option("topic", "testConsumer1")
+    //   .option("checkpointLocation", "file:///home/maria_dev/output/checkpoint/filesink_checkpoint")
+    //   .start()
+    //   .awaitTermination()
 
     //
     // // Output to foreachBatch sink.
